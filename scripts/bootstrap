@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""İndirme başlatmadan sabit kaynak planını ve önkoşulları gösterir."""
+
+from yuva_dev.bootstrap import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())

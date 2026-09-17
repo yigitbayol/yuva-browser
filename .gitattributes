@@ -1,0 +1,11 @@
+* text=auto
+*.py text eol=lf
+*.patch text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.md text eol=lf
+*.html text eol=lf
+scripts/bootstrap text eol=lf
+scripts/doctor text eol=lf
+scripts/check-upstream text eol=lf
+scripts/check-repository text eol=lf

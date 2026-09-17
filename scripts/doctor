@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""Yuva derleme önkoşullarını salt okunur biçimde denetler."""
+
+from yuva_dev.environment import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())

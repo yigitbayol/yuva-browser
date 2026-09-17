@@ -1,8 +1,8 @@
 # Yuva mimarisi
 
-Durum: 18 Eylül 2026 tarihli Faz 0 önerisi. Bileşenler henüz uygulanmadı. Asıl mimari bu dosyadadır; [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) buraya yönlendirir.
+Durum: 18 Eylül 2026. Faz 0 tasarımı hazır; ince depo ve geliştirme önkoşulları [ADR ile kabul edildi](docs/adr/0001-thin-chromium-layer.md). Hazırlık araçları uygulanıyor, tarayıcı bileşenleri henüz uygulanmadı. Asıl mimari bu dosyadadır; [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) buraya yönlendirir.
 
-Chromium tarayıcı arayüzü, Blink, V8, ağ katmanı, PDFium, eklenti altyapısı ve OS güvenlik bütünleşmesi korunur. `yuva/` bileşenleri küçük, sahipli yamalarla bağlanır. Tarayıcı bütünleşmesi C++, sınırlandırılmış IPC Chromium Mojo; ayrık ayrıştırıcı/eşleştirici için uygun olduğunda Rust kullanılır. İkinci render soyutlaması veya JavaScript masaüstü kabuğu kurulmaz.
+Chromium tarayıcı arayüzü, Blink, V8, ağ katmanı, PDFium, eklenti altyapısı ve OS güvenlik bütünleşmesi korunur. `components/` altındaki Yuva bileşenleri küçük, sahipli yamalarla bağlanır. Tarayıcı bütünleşmesi C++, sınırlandırılmış IPC Chromium Mojo; ayrık ayrıştırıcı/eşleştirici için uygun olduğunda Rust kullanılır. İkinci render soyutlaması veya JavaScript masaüstü kabuğu kurulmaz.
 
 ```mermaid
 flowchart TD
@@ -29,18 +29,18 @@ Aşağıdaki adlar önerilen Yuva sözleşmeleridir; var olan Chromium API'si ol
 
 | Bileşen | Girdi/çıktı | Sınır |
 | --- | --- | --- |
-| `yuva/browser/policy/` | Yerel tercih → nesil kimlikli değişmez politika | Sayfa korumayı, kalıcılığı veya izni değiştiremez |
-| `yuva/components/kalkan/` | İstek bağlamı + kurallar → izin/engel/temizlenmiş gezinme | Yerel, sınırlı eşleştirme; URL sorgu servisi yok |
-| `yuva/browser/storage/` | Kullanıcı eylemi + oturum → depolama yaşam döngüsü | Süreç/depolama atamasından önce seçim; canlı belge yeniden bağlanmaz |
-| `yuva/components/trusted_sites/` | Kanonik URL + kayıt + güvenlik durumu → etiket/uyarı | TLS'i aşamaz, kök sertifika ekleyemez |
-| `yuva/components/bank_security/` | Doğrulanmış banka origin'i → hassas gezinme bağlamı | MFA/form akışını sessiz değiştiremez |
-| `yuva/components/content_protection/` | Kanonik host + imzalı indeks → yerel politika engeli | Ayrı kök; ziyaret denemesi kaydı/URL sorgusu yok |
-| `yuva/components/privacy_signals/` | Kullanıcının mahremiyet tercihi → GPC/DNT | Rıza uydurmaz; HTTP/DOM/worker tutarlılığı |
-| `yuva/optional/prayer_times/` | Açık etkinleştirme + elle şehir → vakit bilgisi | Varsayılan kapalı; din/konum çıkarımı yok |
-| `yuva/components/component_security/` | İndirilen veri → doğrulanmış değişmez görüntü | Boyut, imza, süre ve sürüm gerileme kontrolleri |
-| `yuva/browser/ui/` | Tarayıcı durumu → küçük kalkan | Sayfaya açık doğrulama rozeti API'si yok |
-| `yuva/browser/search/` | Sorgu + seçilen sağlayıcı → doğrudan istek | Yuva aracı sunucusu yok |
-| `yuva/updater/` | Yetkilendirilmiş hedef → hazırlanmış OS kurulumu | İçerikten keyfi URL/komut kabul etmez |
+| `components/browser/policy/` | Yerel tercih → nesil kimlikli değişmez politika | Sayfa korumayı, kalıcılığı veya izni değiştiremez |
+| `components/yuva_kalkan/` | İstek bağlamı + kurallar → izin/engel/temizlenmiş gezinme | Yerel, sınırlı eşleştirme; URL sorgu servisi yok |
+| `components/browser/storage/` | Kullanıcı eylemi + oturum → depolama yaşam döngüsü | Süreç/depolama atamasından önce seçim; canlı belge yeniden bağlanmaz |
+| `components/trusted_sites/` | Kanonik URL + kayıt + güvenlik durumu → etiket/uyarı | TLS'i aşamaz, kök sertifika ekleyemez |
+| `components/bank_security/` | Doğrulanmış banka origin'i → hassas gezinme bağlamı | MFA/form akışını sessiz değiştiremez |
+| `components/content_protection/` | Kanonik host + imzalı indeks → yerel politika engeli | Ayrı kök; ziyaret denemesi kaydı/URL sorgusu yok |
+| `components/privacy_signals/` | Kullanıcının mahremiyet tercihi → GPC/DNT | Rıza uydurmaz; HTTP/DOM/worker tutarlılığı |
+| `components/optional/prayer_times/` | Açık etkinleştirme + elle şehir → vakit bilgisi | Varsayılan kapalı; din/konum çıkarımı yok |
+| `components/component_security/` | İndirilen veri → doğrulanmış değişmez görüntü | Boyut, imza, süre ve sürüm gerileme kontrolleri |
+| `components/browser/ui/` | Tarayıcı durumu → küçük kalkan | Sayfaya açık doğrulama rozeti API'si yok |
+| `components/browser/search/` | Sorgu + seçilen sağlayıcı → doğrudan istek | Yuva aracı sunucusu yok |
+| `components/updater/` | Yetkilendirilmiş hedef → hazırlanmış OS kurulumu | İçerikten keyfi URL/komut kabul etmez |
 
 İndirilen kurallar istek yolunun dışında, sandbox içindeki yardımcı süreçte derlenir. Denetim, Chromium istek işleme katmanına yakın salt okunur sınırlı eşleştiriciyle yapılır. Tek URLLoader kancası worker, yönlendirme, WebSocket ve prerender kapsamının kanıtı değildir; kilitli revizyonda yollar izlenmelidir.
 

@@ -1,8 +1,22 @@
 # Sıralı uygulama planı
 
-Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incelemesinden sonra uygulanacak planı tanımlar.** Her görev küçük PR veya sınırları belirtilmiş deneydir; büyük görev ölçüm/veri kapsamına göre aynı güvenlik kapısını koruyan alt PRlara ayrılır. Dosya yolları öneridir. Kimlikler İngilizce; açıklamalar Türkçe.
+Durum: Faz 1 geliştirme hazırlığı, 18 Eylül 2026. **İnce depo kararı kabul edildi; ilk hazırlık araçları uygulandı. Çalışan tarayıcı henüz yok.** Her görev küçük PR veya sınırları belirtilmiş deneydir; büyük görev ölçüm/veri kapsamına göre aynı güvenlik kapısını koruyan alt PRlara ayrılır. Henüz oluşturulmamış dosya yolları öneridir. Kimlikler İngilizce; açıklamalar Türkçe.
 
-01–41 resmî 0.1 yolunu; 42–46 Alpha/Beta işlerini; 47 bağımsız isteğe bağlı yardımcıyı; 48 Stable kapısını tanımlar. İleri özellik eksikliği temel zorunlu güvenliği erteleyemez. Kod, kurum kayıtları, üretim anahtarları ve workflow bu belgede oluşturulmuş sayılmaz.
+01–41 resmî 0.1 yolunu; 42–46 Alpha/Beta işlerini; 47 bağımsız isteğe bağlı yardımcıyı; 48 Stable kapısını tanımlar. İleri özellik eksikliği temel zorunlu güvenliği erteleyemez. Aşağıdaki tablo dışında görevlerin tamamlandığı varsayılmaz.
+
+## Gerçekleşen kapsam
+
+| Görev | Durum ve kalan iş |
+| --- | --- |
+| 01 | İnce depo ve önkoşul ADR'leri kabul edildi. Ürün bileşenlerinin ayrı güvenlik/deney kararları bekliyor. |
+| 02 | Yerel macOS ARM64 envanteri ve `doctor` hazır. Disk bütçesi ve tam Xcode engelleri var; diğer platformlarda derleme kapasitesi henüz nitelendirilmedi. |
+| 03 | `config/versions.json` içinde Chromium sürüm/commit, DEPS SHA-256 ve depot_tools commit'i sabitlendi; uzak kaynak kimliği denetlendi. Tam DEPS/CIPD/SDK kilidi bekliyor. |
+| 04 | `bootstrap --plan` ve önkoşul kapısı hazır. Kaynak indirme, hook incelemesi, bağımlılık hazırlama ve GN yapılandırması uygulanmadı. |
+| 05 | Sıralı, hash denetimli yama manifestosu ve geçici Git indeksinde uyumluluk denetimi test edildi. Ürün yaması yok; gerçek kaynak hazırlama ve sonuç ağaç özeti hattı bekliyor. |
+| 06 | Başlanmadı; Chromium indirilmedi veya derlenmedi. |
+| 36 | Yalnız geliştirici araçları için Windows/macOS/Linux CI ve upstream izleyicisi tanımlandı. Tarayıcı/Pardus testleri, yayın, imzalama ve provenans hattı bekliyor. |
+
+Araç testleri `tests/tooling/` içindedir. Sıradaki küçük işler sırasıyla: hedef derleme makinesinin kaynak/SDK nitelendirmesi; tam bağımlılık kilidi şeması ve doğrulayıcısı; açık indirme seçeneğiyle dış çalışma alanı hazırlama; ilk saf Chromium derlemesi. İndirme/büyük derleme bu hazırlık tesliminin parçası değildir. Her ilerleme README'ye yansıtılır.
 
 ## 01 — Mimari kararları incele
 
@@ -25,7 +39,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 03 — Upstream ve araç kilidini tanımla
 
 - **Amaç:** Güncel güvenlik yamalı Stable commit ve bütün DEPS/araç/SDK girdilerini bağla.
-- **Dosyalar/bileşenler:** chromium/upstream.lock.json, build/config/
+- **Dosyalar/bileşenler:** config/versions.json, config/upstream.lock.json, build/config/
 - **Bağımlılıklar:** 01, 02
 - **Güvenlik:** Hareketli latest, doğrulanmamış hook veya rastgele ikili kullanılmaz.
 - **Testler:** Hash/commit uyuşmazlığı ve değişen araç girdisinin reddi.
@@ -34,7 +48,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 04 — Kaynak hazırlama aracını oluştur
 
 - **Amaç:** Chromium çalışma alanını depodan ayrı, doğrulanmış girdilerle kur.
-- **Dosyalar/bileşenler:** tools/bootstrap/, docs/BUILD.md
+- **Dosyalar/bileşenler:** scripts/yuva_dev/, docs/BUILD.md
 - **Bağımlılıklar:** 03
 - **Güvenlik:** İndirilmiş betik körlemesine yürütülmez; yollar/symlink ve mevcut kullanıcı verisi korunur.
 - **Testler:** Boş çalışma alanı, kesinti, disk dolması, tekrar çalıştırma.
@@ -43,7 +57,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 05 — Kesin yama uygulama hattını oluştur
 
 - **Amaç:** Sıralı sahipli yamaları temiz kaynağa uygula ve sonuç hash üret.
-- **Dosyalar/bileşenler:** tools/patches/, chromium/patches/series.json
+- **Dosyalar/bileşenler:** scripts/yuva_dev/, patches/series.json
 - **Bağımlılıklar:** 03, 04
 - **Güvenlik:** Fuzzy uygulama ve kısmi başarı yasak; her ithalde lisans/köken.
 - **Testler:** Yanlış taban/sıra, eksik dosya, değiştirilmiş hash ve çakışma.
@@ -70,7 +84,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 08 — Ağ ve Google hizmet envanterini çıkar
 
 - **Amaç:** Temiz profil ağ akışlarını ve kaldırılabilir gereksiz hizmetleri ayır.
-- **Dosyalar/bileşenler:** docs/adr/, yuva/browser/policy/, chromium/patches/privacy/
+- **Dosyalar/bileşenler:** docs/adr/, components/browser/policy/, patches/privacy/
 - **Bağımlılıklar:** 05, 07
 - **Güvenlik:** CT/kök/iptal/threat güncellemesi eşdeğersiz kaldırılmaz; sentetik veri kullan.
 - **Testler:** Başlangıç/boşta/arama/çökme yakalaması ve endpoint negatif kontrolleri.
@@ -79,7 +93,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 09 — Genel tehdit kaynağını nitelendir
 
 - **Amaç:** Oltalama, malware ve indirme için çalışan lisanslı güvenli veri yolu seç.
-- **Dosyalar/bileşenler:** yuva/components/, docs/adr/, PRIVACY.md
+- **Dosyalar/bileşenler:** components/, docs/adr/, PRIVACY.md
 - **Bağımlılıklar:** 08
 - **Güvenlik:** GPC/Trusted Sites takip listesi bunun yerine geçmez; URL ve hash-prefix sızıntısı incelenir.
 - **Testler:** Sentetik zararlı site/dosya, stale/offline, relay arızası, ağ gizliliği.
@@ -88,7 +102,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 10 — Marka ve Türkçe kaynakları ayır
 
 - **Amaç:** Minimal Yuva kimliği ve GRIT yerelleştirme kaynaklarını ekle.
-- **Dosyalar/bileşenler:** yuva/app/, chromium/patches/branding/, docs/LANGUAGE_POLICY.md
+- **Dosyalar/bileşenler:** resources/, patches/chromium/branding/, docs/LANGUAGE_POLICY.md
 - **Bağımlılıklar:** 05, 06
 - **Güvenlik:** Kod/enum/parametre İngilizce; UI/yorum Türkçe; güvenlik metni zayıflatılmaz.
 - **Testler:** Türkçe casing/bidi/kesilme, kaynak anahtarı, uygulama kimliği çakışması.
@@ -97,7 +111,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 11 — Semantik token ve canlı tema hattını kur
 
 - **Amaç:** System/Light/Dark çözümünü native renk sağlayıcı ve WebUI arasında birleştir.
-- **Dosyalar/bileşenler:** yuva/browser/ui/, yuva/app/, docs/DESIGN_SYSTEM.md
+- **Dosyalar/bileşenler:** components/browser/ui/, resources/, docs/DESIGN_SYSTEM.md
 - **Bağımlılıklar:** 10
 - **Güvenlik:** Kritik uyarı görünür; web sayfası chrome temasını değiştiremez.
 - **Testler:** OS canlı değişim, elle seçim, kontrast, forced-colors, DPI ve klavye; Pardus ayrı.
@@ -106,7 +120,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 12 — Geçici profil yazılarını denetle
 
 - **Amaç:** OTR ve parent keyed service disk/ağ yan etkisini incele.
-- **Dosyalar/bileşenler:** yuva/browser/storage/, tests/privacy/, docs/adr/
+- **Dosyalar/bileşenler:** components/browser/storage/, tests/privacy/, docs/adr/
 - **Bağımlılıklar:** 07, 08
 - **Güvenlik:** OTR path paylaşımı ve eklenti yazıları görmezden gelinmez.
 - **Testler:** SQLite/LevelDB/cache/service worker/dump dosya farkı, normal kapanış ve çökme.
@@ -115,7 +129,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 13 — Bütün pencere oturum yaşam döngüsünü kur
 
 - **Amaç:** Normal web açılışlarının tek geçici bağlama yönlendirilmesini uygula.
-- **Dosyalar/bileşenler:** yuva/browser/storage/, chromium/patches/privacy/, tests/privacy/
+- **Dosyalar/bileşenler:** components/browser/storage/, patches/privacy/, tests/privacy/
 - **Bağımlılıklar:** 12
 - **Güvenlik:** Popup/harici protokol/extension/restore kalıcı profile kaçamaz.
 - **Testler:** Son pencere, macOS boş süreç, background worker, çok sekme, çökme/yeniden açılış.
@@ -124,7 +138,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 14 — Mahremiyet varsayılanlarını nitelendir
 
 - **Amaç:** Üçüncü taraf engeli, partitioning, HTTPS-first, referrer, izin ve DNS/WebRTC politikasını kur.
-- **Dosyalar/bileşenler:** yuva/browser/policy/, build/config/, tests/privacy/
+- **Dosyalar/bileşenler:** components/browser/policy/, build/config/, tests/privacy/
 - **Bağımlılıklar:** 07, 09, 13
 - **Güvenlik:** DoH/VPN/WebRTC için sızıntısızlık iddiası kanıtsız değil; TLS fallback yok.
 - **Testler:** İki site/aynı tracker, CHIPS/Storage Access, proxy/IPv6/TURN, captive portal, izin ömrü.
@@ -133,7 +147,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 15 — Yerel takip motorunu değerlendir
 
 - **Amaç:** adblock-rust lisansı/FFI/performansını dar bir prototiple nitelendir.
-- **Dosyalar/bileşenler:** third_party/, yuva/components/kalkan/, tests/fuzz/
+- **Dosyalar/bileşenler:** third_party/, components/yuva_kalkan/, tests/fuzz/
 - **Bağımlılıklar:** 05, 08
 - **Güvenlik:** Panic/ömür/boyut sınırları; başlangıçta scriptlet/uzak kod yok.
 - **Testler:** Parser fuzz, adversarial kural, worker/redirect kaynak bağlamı ve gecikme.
@@ -142,7 +156,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 16 — Takip ve reklam veri kümelerini ayır
 
 - **Amaç:** Standart takip alt kümesi ile Sıkı genel reklam kurallarını ayrı derle.
-- **Dosyalar/bileşenler:** tools/, yuva/components/kalkan/, tests/fixtures/
+- **Dosyalar/bileşenler:** scripts/, components/yuva_kalkan/, tests/fixtures/
 - **Bağımlılıklar:** 15
 - **Güvenlik:** Ücretli allowlist, kendi reklamı veya kaynağı belirsiz kural yok.
 - **Testler:** Bağlamsal reklama Standart izin, tracker engeli, Sıkı farkı, lisans ve yanlış pozitif.
@@ -151,7 +165,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 17 — Dar izleme parametresi temizliğini ekle
 
 - **Amaç:** fbclid/gclid/utm ailesini kanıtlı üst gezinme bağlamında temizle.
-- **Dosyalar/bileşenler:** yuva/components/kalkan/, tests/compatibility/
+- **Dosyalar/bileşenler:** components/yuva_kalkan/, tests/compatibility/
 - **Bağımlılıklar:** 14, 16
 - **Güvenlik:** İmzalı URL/ödeme/auth/POST/body/fragment keyfi değiştirilmez.
 - **Testler:** Kodlama/duplicate parametre, redirect, signed URL ve banka giriş fixtureları.
@@ -160,7 +174,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 18 — GPC ve DNT tercihlerini uygula
 
 - **Amaç:** HTTP/DOM/worker sinyallerini açık mahremiyet ayarına bağla.
-- **Dosyalar/bileşenler:** yuva/components/privacy_signals/, yuva/browser/ui/, tests/privacy/
+- **Dosyalar/bileşenler:** components/privacy_signals/, components/browser/ui/, tests/privacy/
 - **Bağımlılıklar:** 10, 14
 - **Güvenlik:** Sinyal yokluğu rıza değildir; DNT açıklaması ve kullanıcı seçimi koşulu korunur.
 - **Testler:** Üst gezinmede GPC snapshot, worker/header tutarlılığı, kapatma/yenileme ve fingerprint farkı.
@@ -169,7 +183,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 19 — Kalkan seviye ve küçük panel sözleşmesini uygula
 
 - **Amaç:** Standart/Sıkı/siteye özel Kapalı ve doğru oturum sayacını sun.
-- **Dosyalar/bileşenler:** yuva/browser/ui/, yuva/components/kalkan/, tests/browser/
+- **Dosyalar/bileşenler:** components/browser/ui/, components/yuva_kalkan/, tests/browser/
 - **Bağımlılıklar:** 11, 13, 16, 17, 18
 - **Güvenlik:** Off zorunlu güvenlik/içerik/çerez/partition korumasını kapatamaz; site sayacı telemetri değil.
 - **Testler:** Yetkisiz sayfa çağrısı, navigation/BFCache, alt küme sayacı, klavye/ekran okuyucu.
@@ -178,7 +192,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 20 — Ortak imzalı veri doğrulayıcıyı kur
 
 - **Amaç:** Bakımlı TUF istemcisini rol/expiry/rollback ve atomik durumla bütünleştir.
-- **Dosyalar/bileşenler:** yuva/components/component_security/, tests/security/, tests/fuzz/
+- **Dosyalar/bileşenler:** components/component_security/, tests/security/, tests/fuzz/
 - **Bağımlılıklar:** 03, 07
 - **Güvenlik:** Browser/registry/content/filter ayrı kök; HTTPS yetki değildir.
 - **Testler:** Tamper/replay/rotation/equivocation/saat/çökme/boyut ve platform crypto vektörleri.
@@ -187,7 +201,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 21 — Trusted Sites şemasını ve derleyicisini oluştur
 
 - **Amaç:** Kurum, exact origin, kanıt, kapsam ve süre alanlarını doğrula.
-- **Dosyalar/bileşenler:** trusted-sites/schema/, trusted-sites/fixtures/, tools/
+- **Dosyalar/bileşenler:** trusted-sites/schema/, trusted-sites/fixtures/, scripts/
 - **Bağımlılıklar:** 20
 - **Güvenlik:** Duplicate/çelişkili host, public suffix ve keyfi script/regex reddi.
 - **Testler:** IDNA/PSL/port/category/size, JSON duplicate ve tutarsız login listesi.
@@ -223,7 +237,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 25 — Origin rozeti ve yerel eşleşmeyi bütünleştir
 
 - **Amaç:** Normal TLS + güncel kayıt durumunu browser-owned UIya bağla.
-- **Dosyalar/bileşenler:** yuva/components/trusted_sites/, yuva/browser/ui/
+- **Dosyalar/bileşenler:** components/trusted_sites/, components/browser/ui/
 - **Bağımlılıklar:** 11, 20, 21, 24
 - **Güvenlik:** Kurum güvenilirliği garantisi değil; TLS bypass veya stale olumlu rozet yok.
 - **Testler:** Redirect/provisional commit/BFCache/fullscreen/TLS race ve tam host/port.
@@ -232,7 +246,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 26 — Benzer adres sınıflandırıcısını ve kesintiyi nitelendir
 
 - **Amaç:** Unicode/mesafe/klavye/brand/PSL/redirect sinyallerini birleştir.
-- **Dosyalar/bileşenler:** yuva/components/trusted_sites/, tests/security/, tests/fixtures/
+- **Dosyalar/bileşenler:** components/trusted_sites/, tests/security/, tests/fixtures/
 - **Bağımlılıklar:** 22, 23, 25
 - **Güvenlik:** Salt benzerlikle blok yok; resmî hedefe saldırgan parametre/POST aktarılmaz.
 - **Testler:** Türkçe benign/sentetik saldırı korpusu, precision/FP/gecikme ve ağdan önce kesinti.
@@ -241,7 +255,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 27 — Banka güvenlik bağlamını araştır ve sınırla
 
 - **Amaç:** Otomatik origin bağlamı/HTTPS/download/redirect temelini kur; derin extension/pano müdahalesini ADRye ayır.
-- **Dosyalar/bileşenler:** yuva/components/bank_security/, docs/adr/, tests/compatibility/
+- **Dosyalar/bileşenler:** components/bank_security/, docs/adr/, tests/compatibility/
 - **Bağımlılıklar:** 09, 25, 26
 - **Güvenlik:** MFA/3DS/WebAuthn sessiz değişmez; pano içeriği kaydı ve genel eklenti kapatma yok.
 - **Testler:** Content script/worker/activeTab/debugger erişim haritası ve izinli bankacılık testleri.
@@ -259,7 +273,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 29 — İçerik içe alma hattını oluştur
 
 - **Amaç:** Sınırlı arşivden normalize/dedup/kategori denetimli veri üret.
-- **Dosyalar/bileşenler:** tools/, content-protection/schema/, tests/fuzz/
+- **Dosyalar/bileşenler:** scripts/, content-protection/schema/, tests/fuzz/
 - **Bağımlılıklar:** 20, 28
 - **Güvenlik:** Path traversal/decompression bomb/shared suffix ve kaynak zehirleme sınırı.
 - **Testler:** Domain/IDNA/public-private suffix, anormal fark, kurum listesi çelişkisi.
@@ -268,7 +282,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 30 — Kompakt içerik indeksini ölç
 
 - **Amaç:** Tam küme referansı ile trie/hash/Bloom adayını karşılaştır.
-- **Dosyalar/bileşenler:** yuva/components/content_protection/, tests/fixtures/
+- **Dosyalar/bileşenler:** components/content_protection/, tests/fixtures/
 - **Bağımlılıklar:** 29
 - **Güvenlik:** Bloom pozitif tek başına blok olamaz; parser/mmap sınırı.
 - **Testler:** Milyonluk veri eşdeğerliği, adversarial indeks, p95/RSS/açılış bütçesi.
@@ -277,7 +291,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 31 — İçerik yerel yaptırımını bütünleştir
 
 - **Amaç:** Gezinme/ağ/worker/cache/restore kapılarında zorunlu politikayı uygula.
-- **Dosyalar/bileşenler:** yuva/components/content_protection/, chromium/patches/security/, tests/browser/
+- **Dosyalar/bileşenler:** components/content_protection/, patches/chromium/security/, tests/browser/
 - **Bağımlılıklar:** 13, 20, 30
 - **Güvenlik:** Off/Remember/extension bypass yok; eski negatif liste ve verisiz onarım durumu açık.
 - **Testler:** Redirect/popup/prefetch/DNS speculation/BFCache/service worker/offline/bozuk liste/çökme.
@@ -286,7 +300,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 32 — Yanlış pozitif ve düzeltme sürecini kur
 
 - **Amaç:** Kayıt/içerik/filtre hatası için açık ve mahremiyetli rapor yolu sağla.
-- **Dosyalar/bileşenler:** yuva/browser/ui/, docs/, ayrı veri yayın işleri
+- **Dosyalar/bileşenler:** components/browser/ui/, docs/, ayrı veri yayın işleri
 - **Bağımlılıklar:** 19, 24, 26, 31
 - **Güvenlik:** Domain yalnız açık onayla; path/query/history yok; kamuya görünür rapor açıklanır.
 - **Testler:** Gönderim öncesi önizleme/iptal, imzalı daha-yüksek sürüm düzeltmesi, consent negatif testi.
@@ -331,7 +345,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 37 — SBOM, lisans ve yeniden üretim kanıtını ekle
 
 - **Amaç:** Gerçek bağımlılık grafiği ve unsigned içerik karşılaştırmasını üret.
-- **Dosyalar/bileşenler:** tools/licenses/, tools/release/, build/
+- **Dosyalar/bileşenler:** scripts/licenses/, scripts/release/, build/
 - **Bağımlılıklar:** 16, 24, 29, 35, 36
 - **Güvenlik:** Tüm Chromium DEPS/araç/liste girdisi; SBOM eksikliği gizlenmez.
 - **Testler:** İki temiz derleme, değişmiş bağımlılık, notice/source archive ve provenance özeti.
@@ -340,7 +354,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 38 — İmzalama ve yetkili release hattını kur
 
 - **Amaç:** OS imzası/noter, ayrı binary TUF kökü ve GitHub artefakt yayını tasarımını uygula.
-- **Dosyalar/bileşenler:** tools/release/, .github/workflows/, yuva/updater/
+- **Dosyalar/bileşenler:** scripts/release/, .github/workflows/, components/updater/
 - **Bağımlılıklar:** 20, 36, 37
 - **Güvenlik:** GitHub/checksum tek başına yetki değil; signer yalnız onaylı digest kabul eder.
 - **Testler:** Authenticode/Gatekeeper/offline .deb doğrulama, wrong publisher/channel/arch, role/TOCTOU.
@@ -349,7 +363,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 39 — Güncellik bildirimi ve ilk kurulum doğrulamasını ekle
 
 - **Amaç:** 0.1 elle güncelleme sınırını güvenilir meta veriyle görünür yap.
-- **Dosyalar/bileşenler:** yuva/updater/, yuva/browser/ui/, docs/BUILD.md
+- **Dosyalar/bileşenler:** components/updater/, components/browser/ui/, docs/BUILD.md
 - **Bağımlılıklar:** 38
 - **Güvenlik:** İlk kurulum güveni aynı ele geçirilmiş indirme sayfasına indirgenemez.
 - **Testler:** Stale metadata, clock, replay, yanlış platform, bağımsız kök/publisher doğrulama.
@@ -358,7 +372,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 40 — Upstream ve olay tatbikatlarını çalıştır
 
 - **Amaç:** Acil/rutin roll ve anahtar/runner kesintisini süreyle ölç.
-- **Dosyalar/bileşenler:** tools/release/, UPSTREAM_STRATEGY.md, SECURITY.md
+- **Dosyalar/bileşenler:** scripts/release/, UPSTREAM_STRATEGY.md, SECURITY.md
 - **Bağımlılıklar:** 35, 38, 39
 - **Güvenlik:** SLA tutturmak için güvenlik testi kapatılamaz; iki müdahale sorumlusu.
 - **Testler:** Üç roll, registry/content rotation, eksik platform, bozuk kurucu ve recovery.
@@ -376,7 +390,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 42 — Hatırlama ADR ve prototipini hazırla
 
 - **Amaç:** Ayrı context ile selective persistence maliyetini araştır.
-- **Dosyalar/bileşenler:** yuva/browser/storage/, docs/adr/, tests/privacy/
+- **Dosyalar/bileşenler:** components/browser/storage/, docs/adr/, tests/privacy/
 - **Bağımlılıklar:** 13, 35
 - **Güvenlik:** OTR in_memory bayrağıyla çözüm yok; site/origin ve üçüncü taraf kapsamı açık.
 - **Testler:** SSO/POST/opener/postMessage/worker/çok context kaynak bütçesi.
@@ -385,7 +399,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 43 — Hatırlama ve Unut pilotunu nitelendir
 
 - **Amaç:** Temiz yeniden açma ve iptal/quiesce/silme yaşam döngüsünü sınırlı pilotta kur.
-- **Dosyalar/bileşenler:** yuva/browser/storage/, yuva/browser/ui/, tests/privacy/
+- **Dosyalar/bileşenler:** components/browser/storage/, components/browser/ui/, tests/privacy/
 - **Bağımlılıklar:** 42
 - **Güvenlik:** Canlı veri nakli, sahte yalnız-login vaadi ve yarım silmede başarı yok.
 - **Testler:** İptal, eşzamanlı sekme, crash journal, BFCache, disk dolması, eski context erişimi.
@@ -394,7 +408,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 44 — CMP ret ve Sıkı kozmetik filtre deneyini incele
 
 - **Amaç:** Rıza uydurmadan düşük bakım yüküyle isteğe uygun ret/kozmetik desteğini değerlendir.
-- **Dosyalar/bileşenler:** yuva/components/kalkan/, docs/adr/, tests/compatibility/
+- **Dosyalar/bileşenler:** components/yuva_kalkan/, docs/adr/, tests/compatibility/
 - **Bağımlılıklar:** 16, 18, 19, 32
 - **Güvenlik:** Accept/TCF rızası üretme veya tercihsiz banner gizleme yok; hukuki inceleme gerekir.
 - **Testler:** CMP sürüm değişimi, ret başarısızlığı, bozulmuş sayfa ve Standart/Sıkı farkı.
@@ -403,7 +417,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 45 — Otomatik kurulum uyarlayıcılarını nitelendir
 
 - **Amaç:** Windows/macOS güvenli updater, Linux/Pardus tek sahip paket yöneticisi kur.
-- **Dosyalar/bileşenler:** yuva/updater/, build/packaging/, tests/security/
+- **Dosyalar/bileşenler:** components/updater/, build/packaging/, tests/security/
 - **Bağımlılıklar:** 38, 39, 40
 - **Güvenlik:** Artan güvenlik eşiği; sessiz rollback/telemetri yok; installer IPC dar.
 - **Testler:** TOCTOU/path traversal/symlink/güç kesintisi/disk dolması/yetki ve sağlık kurtarma.
@@ -421,7 +435,7 @@ Durum: Faz 0, 18 Eylül 2026. **Bu görevler henüz yürütülmedi. Mimari incel
 ## 47 — İsteğe bağlı Vakitler fizibilitesini nitelendir
 
 - **Amaç:** Sağlayıcı hakları, yerel hesap ve manuel şehirle sonraki küçük yardımcıyı değerlendir.
-- **Dosyalar/bileşenler:** yuva/optional/prayer_times/, docs/OPTIONAL_FEATURES.md
+- **Dosyalar/bileşenler:** components/optional/prayer_times/, docs/OPTIONAL_FEATURES.md
 - **Bağımlılıklar:** 11, 36; güvenlik çekirdeği işleri öncelikli
 - **Güvenlik:** Varsayılan off; din/IP çıkarımı, GPS sessiz erişim, telemetry, ses/portal yok.
 - **Testler:** Kapalı ağ yok, timezone/DST/Ramazan/gece yarısı/high latitude, provider lisans/doğruluk.

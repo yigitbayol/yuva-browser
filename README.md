@@ -2,6 +2,35 @@
 
 ### Özel olan, özel kalır.
 
+## Güncel ilerleme — 18 Eylül 2026
+
+**Faz 0 tasarım belgeleri tamamlandı; Faz 1 geliştirme hazırlığı başladı.** Henüz çalışan veya indirilebilir bir Yuva tarayıcısı yok. Aşağıdaki ürün anlatımı hedeflenen davranışları açıklar.
+
+| Alan | Gerçek durum |
+| --- | --- |
+| Mimari | Chromium Stable + küçük Yuva deposu + ayrı bileşen/yama katmanı seçildi. |
+| Kaynak kimliği | Yuva `0.1.0-dev`, Chromium `153.0.8010.53`, yama kümesi `1`; tam commit ve DEPS özeti [sabitlendi](config/versions.json). Henüz derlenmedi. |
+| Geliştirici araçları | Ortam denetimi, indirmesiz bootstrap planı, upstream sürüm/yama denetimi ve Git indeks koruması eklendi. |
+| Doğrulama | Araçların yerel otomatik testleri geçti. Windows/macOS/Linux araç CI'sı ve periyodik upstream denetimi tanımlandı. Bunlar tarayıcı derleme testleri değildir. |
+| Tarayıcı özellikleri | Kalkan, geçici depolama, banka/kamu koruması ve içerik koruması tasarlandı; tarayıcıya henüz uygulanmadı. |
+| Platformlar | Windows, macOS, genel Linux ve Pardus hedefleniyor; hiçbirinin Yuva derlemesi henüz doğrulanmadı. Pardus için ayrı testler ve yerel `.deb` zorunlu. |
+
+**Sıradaki adım:** Derleme ortamını nitelendirmek, DEPS/SDK/araç zinciri kilidini tamamlamak ve dış çalışma alanını hazırlayan gerçek bootstrap adımını geliştirmek. Ardından ilk saf Chromium referans derlemesi gelecek. Bu sırada Chromium kaynakları Git geçmişine alınmayacak.
+
+Geliştirme araçlarını Chromium indirmeden denemek için:
+
+```sh
+./scripts/bootstrap --plan
+./scripts/doctor
+python3 -m unittest discover -s tests/tooling -v
+```
+
+`doctor` eksik disk/SDK gibi engellerde hata koduyla durur. `bootstrap` şu anda yalnız plan ve önkoşul denetimi yapar; kaynak indirmez. Gereksinimler ve Windows komutları [derleme belgesinde](docs/BUILD.md).
+
+[Mimari karar](docs/adr/0001-thin-chromium-layer.md) · [Sıralı işler ve durumları](IMPLEMENTATION_PLAN.md) · [Yol haritası](ROADMAP.md) · [Teknik belgeler](docs/README.md) · [Araç CI sonuçları](https://github.com/yigitbayol/yuva-browser/actions/workflows/development-tools.yml)
+
+---
+
 **Yuva**, Türkiye'de geliştirilen, açık kaynak ve gizlilik odaklı bir web tarayıcısıdır.
 
 Yuva'nın amacı internete yeni özellikler eklemek değil; **internette gezinmeyi yeniden kullanıcıya ait hale getirmektir.**
@@ -57,6 +86,12 @@ Bütün bunların mümkün olduğunca **web sitelerini bozmadan** yapılması he
 Yuva'nın amacı internette görünmez olduğunuzu iddia etmek değildir.
 
 Amacımız **takip edilmeyi mümkün olduğunca zorlaştırmak ve kontrolü kullanıcıya vermektir.**
+
+Varsayılan Standart koruma takipçileri engellemeyi, takip yapmayan reklamları ise genel olarak engellememeyi hedefler. Sıkı koruma reklam engellemeyi de ekler. Siteye özgü filtre istisnaları TLS, oltalama ve zorunlu içerik korumasını kapatamaz.
+
+> **Yuva reklamları değil, sizi takip eden sistemi engeller.**
+
+Yuva internetin gelir modeline karar vermez. Kullanıcının takip edilip edilmeyeceğine kullanıcı karar verir. Kendi reklamımızı yerleştirmek veya ücret karşılığında reklam istisnası satmak ürün politikasının dışındadır.
 
 ---
 
@@ -288,9 +323,9 @@ Yuva geliştirilirken karar sıralamamız:
 ```text
 Güvenlik
     ↓
-Gizlilik
+Upstream sürdürülebilirliği
     ↓
-Sürdürülebilirlik
+Gizlilik
     ↓
 Web Uyumluluğu
     ↓
@@ -309,15 +344,19 @@ Bir özellik Yuva'yı gereksiz yere karmaşıklaştırıyorsa gerçekten gerekli
 
 # 🚧 Proje Durumu
 
-Yuva şu anda geliştirme aşamasındadır.
+Yuva geliştirme hazırlığı aşamasındadır. Güncel gerçekleşen işler sayfanın başındaki ilerleme tablosunda gösterilir. Aşağıdaki kutular çalışan tarayıcı özelliği ile tasarım çalışmasını birbirine karıştırmaz.
 
 İlk hedef:
 
 ### Yuva 0.1 — Developer Preview
 
-Planlanan ilk kapsam:
+İlk hedef ve sonraki araştırmalar:
 
-* [ ] Chromium tabanının belirlenmesi
+* [x] Chromium tabanının ve ince depo stratejisinin belirlenmesi
+* [x] Faz 0 mimari, tehdit modeli ve tasarım belgeleri
+* [x] Kaynak başlangıç sürümü ve commit kaydı (tam bağımlılık kilidi henüz değil)
+* [x] İndirmesiz plan, ortam ve upstream denetim araçları
+* [ ] Tam bağımlılık kilidi, kaynak hazırlama ve ilk referans derlemesi
 * [ ] Google bağımlılıklarının analizi
 * [ ] Yuva marka ve temel arayüzü
 * [ ] Türkçe birinci sınıf dil desteği
@@ -329,13 +368,16 @@ Planlanan ilk kapsam:
 * [ ] Güvenli DNS
 * [ ] Fingerprinting korumalarının araştırılması
 * [ ] Geçici site verisi mimarisi
-* [ ] "Bu siteyi hatırla"
+* [ ] "Bu siteyi hatırla" — 0.1 sonrasında, depolama deneyleri başarılı olursa
 * [ ] Yuva Doğrulanmış Siteler
+* [ ] Yetkili kaynaklarla doğrulanmış Türk bankacılık kayıtları
 * [ ] Türk kamu alan adları kayıt altyapısı
 * [ ] Phishing/lookalike domain koruması
+* [ ] Resmî dağıtımlarda imzalı yerel yetişkin içerik engeli
 * [ ] Windows build
 * [ ] macOS build
 * [ ] Linux build
+* [ ] Desteklenen Pardus sürümlerinde ayrı derleme/uyumluluk testleri ve yerel `.deb`
 * [ ] Güvenli release pipeline
 * [ ] GitHub Releases üzerinden dağıtım
 
@@ -345,11 +387,11 @@ Planlanan ilk kapsam:
 
 ### 0.1 — Developer Preview
 
-Güvenli Chromium temeli, Yuva markası ve temel privacy mimarisi.
+Güvenli Chromium temeli, Yuva markası ve temel mahremiyet korumaları. Resmî önizleme ikilisi banka/kamu oltalama koruması, yerel içerik engeli, güvenli yayın ve dört platform ailesinin test kapılarından sonra yayımlanabilir.
 
 ### 0.2 — Alpha
 
-Yuva Kalkan, takip engelleme ve Trusted Sites altyapısı.
+Yuva Kalkan, takip engelleme ve Doğrulanmış Siteler korumalarını olgunlaştırma; seçici hatırlama deneyleri.
 
 ### 0.3 — Beta
 

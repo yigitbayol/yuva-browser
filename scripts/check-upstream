@@ -1,0 +1,7 @@
+#!/usr/bin/env python3
+"""Sabit kaynak kimliklerini ve isteğe bağlı yama uyumunu denetler."""
+
+from yuva_dev.upstream import main
+
+if __name__ == "__main__":
+    raise SystemExit(main())

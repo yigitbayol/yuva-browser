@@ -4,7 +4,11 @@ Durum: 18 Eylül 2026 tarihli öneri. Tarihler ekip, ölçülmüş derleme kapas
 
 ## Faz 0 — Mimari inceleme
 
-Temel, depolama, güvenlik, kayıt, içerik, yayın ve tasarım belgelerini incele. İngilizce kod/parametre, Türkçe yorum/belge/UI ve birinci sınıf Pardus kurallarını kaydet. **Bu aşamada dur; mimari incelenmeden büyük Chromium değişikliği başlatma.** Depo şu aşamadadır.
+Temel, depolama, güvenlik, kayıt, içerik, yayın ve tasarım belgeleri hazırlandı. İngilizce kod/parametre, Türkçe yorum/belge/UI ve birinci sınıf Pardus kuralları kaydedildi. [İnce depo](docs/adr/0001-thin-chromium-layer.md) ve [önkoşul denetimi](docs/adr/0002-development-preflight.md) kararları geliştirme hazırlığı için kabul edildi. İlgili güvenlik tasarımı incelenmeden büyük Chromium değişikliği yapılmaz.
+
+## Güncel aşama — Faz 1 geliştirme hazırlığı
+
+Sabit kaynak kimlikleri, boş yama manifestosu, salt okunur ortam kontrolü, indirmesiz bootstrap planı, upstream sürüm/yama denetimi ve Git indeks koruması mevcut. Araçlar için CI tanımlandı; Chromium kaynakları henüz getirilmedi veya derlenmedi. Sırada ortam nitelendirmesi, tam bağımlılık kilidi ve gerçek kaynak hazırlama var. Ayrıntılı gerçekleşme durumu [uygulama planındadır](IMPLEMENTATION_PLAN.md).
 
 ## 0.1 — Developer Preview
 

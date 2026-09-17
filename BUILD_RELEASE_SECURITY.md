@@ -1,6 +1,6 @@
 # Derleme, yayın ve güncelleme güvenliği
 
-Durum: Faz 0 önerisi, 18 Eylül 2026. Workflow, üretim anahtarı, ikili yayın veya ürün güncelleyicisi oluşturulmadı.
+Durum: 18 Eylül 2026. Geliştirici araç testi ve upstream izleme workflow'ları oluşturuldu. Chromium build/yayın workflow'ları, üretim anahtarı, ikili yayın ve ürün güncelleyicisi henüz yoktur.
 
 ```text
 Chromium güvenlik yayını → incelenmiş kaynak kilidi / yamalar
@@ -99,3 +99,11 @@ Ele geçirilmede terfiyi durdur, çevrimiçi yetkiyi iptal et, yetkilendirilmiş
 `releaseSecurityGatesPassed`, çalışan genel tehdit/indirme kaynağına ek olarak banka/kamu kapsam manifestini, iki bağımsız kayıt incelemesini, registry imza/expiry/rollback ve benzerlik kalite testlerini; içerik kaynağı lisansını, imzalı yerel liste/bypass/yanlış pozitif/kayıt tutmama testlerini içerir. Bu koşullar resmî Developer Preview için de zorunludur; boş fixture üretim listesi yerine geçmez.
 
 Kalkan Standart/Sıkı/Off ayrımı, Off altında zorunlu korumaların devamı, GPC/DNT ve geçici veri sınırları sınanır. Sistem/Açık/Koyu canlı tema ve erişilebilirlik bütün platform işlerinde yer alır. Vakitler gibi isteğe bağlı yardımcı, güvenlik paketinin veya platform güncellemesinin yayın bağımlılığı olamaz.
+
+## İlk uygulanan depo/CI sınırı
+
+[development-tools.yml](.github/workflows/development-tools.yml) yalnız Python denetim araçlarını sınar; browser build/test matrisi değildir. [upstream-watch.yml](.github/workflows/upstream-watch.yml) küçük resmî metadata ile yeni masaüstü Stable sürümünü saptar. Her ikisi salt okunur repository yetkisi, tam commit'e sabit action ve kalıcı checkout kimlik bilgisini kapatma kullanır. Build secret, imzalayıcı veya kalıcı self-hosted runner kullanmaz.
+
+İlk kaynak kimlikleri [versions.json](config/versions.json) içindedir; dört ürün/upstream/yama kimliği ve DEPS özeti bağlanır. Çözümlenmiş bütün alt bağımlılık/araç/platform girdileri olmadan tam kilit sayılmaz. Kaynak revizyonunu HTTPS ile kontrol etmek signed-release/TUF yetkilendirmesinin yerine geçmez.
+
+`.gitignore` ile birlikte `scripts/check-repository` Git indeksinin nesne boyutlarını ve kaynak/çıktı/cache kalıplarını denetler. Commit öncesi ve araç CI'sında çalışır; bilinen kalıplardaki veya boyut sınırını aşan dosyalar zorla eklenmiş olsa da yakalanır. Sırların her türünü, farklı adla gizlenmiş bütün çıktıları veya eski geçmişi taradığı iddia edilmez. Büyük dağıtım paketi yalnız doğrulanmış GitHub Releases artefaktıdır; Git geçmişinde saklanamaz.

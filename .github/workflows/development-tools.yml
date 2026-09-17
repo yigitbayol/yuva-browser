@@ -1,0 +1,45 @@
+name: Geliştirme araçları
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+
+concurrency:
+  group: development-tools-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Araç denetimi (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15, windows-2025]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      # Action kimlikleri tam commit'e sabitlenir; kalıcı kimlik bilgisi bırakılmaz.
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - name: Denetim araçlarının güvenlik testleri
+        run: python -m unittest discover -s tests/tooling -v
+      - name: Sabit meta veri ve yama bütünlüğü
+        run: python scripts/check-upstream
+      - name: Git ağacı ve boyut bütçesi
+        run: python scripts/check-repository
+      - name: İndirmesiz hazırlama planı
+        run: python scripts/bootstrap --plan
+
+# Bu işler tarayıcı derlemesi veya Pardus uyumluluk testi değildir.

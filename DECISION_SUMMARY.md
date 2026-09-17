@@ -1,6 +1,6 @@
 # Karar özeti
 
-Durum: mimari inceleme için öneriler, 18 Eylül 2026. Bu belgeler mimari incelenmeden ürün uygulamasına başlama izni değildir.
+Durum: 18 Eylül 2026. [İnce depo ve sabit upstream kararı](docs/adr/0001-thin-chromium-layer.md) geliştirme hazırlığı için kabul edildi. Aşağıdaki tarayıcı özelliklerinin ilgili deney ve inceleme kapıları sürüyor; hazırlık araçlarının varlığı ürün korumalarının tamamlandığı anlamına gelmez.
 
 | Karar | Öneri | Gerekçe / kapı |
 | --- | --- | --- |

@@ -1,45 +1,77 @@
-# Depo yapısı
+# İnce Yuva deposu
 
-Durum: öneri. Faz 0 yalnız belgeler, lisans ve bağımsız görsel tasarım envanteri içerir. Aşağıdaki kaynak ağaç henüz oluşturulmuş ürün uygulaması değildir. Dosya/dizin/anahtar adları İngilizce, açıklamalar Türkçedir.
+Güncelleme: 18 Eylül 2026. **Yuva, Yuva'ya sahip olur; Chromium'un tam kaynak ve geçmişini bu depoda taşımaz.** [ADR 0001](docs/adr/0001-thin-chromium-layer.md) bu kararı kabul eder.
+
+## Gerçekte mevcut olan yapı
 
 ```text
 yuva-browser/
   README.md  LICENSE  CONTRIBUTING.md  SECURITY.md  PRIVACY.md
-  FOUNDATION_ANALYSIS.md  ARCHITECTURE.md  THREAT_MODEL.md
-  ROADMAP.md  REPOSITORY_STRUCTURE.md  UPSTREAM_STRATEGY.md
-  PRIVACY_ARCHITECTURE.md  TRUSTED_SITES_DESIGN.md  CONTENT_PROTECTION.md
-  BUILD_RELEASE_SECURITY.md  DECISION_SUMMARY.md  IMPLEMENTATION_PLAN.md
+  ARCHITECTURE.md ve diğer tasarım belgeleri
+  config/
+    versions.json                    # Açık kaynak kimliği; tam build kilidi değil
+  patches/
+    series.json                      # Sürüm 1; henüz yama yok
+  scripts/
+    bootstrap                        # Plan ve önkoşul kapısı
+    doctor                           # Salt okunur ortam denetimi
+    check-upstream                   # Sürüm/hash/yama uyumu
+    check-repository                 # Git indeksi ve boyut bütçesi
+    yuva_dev/                        # Python uygulaması; dış paket gerektirmez
+  tests/tooling/                     # Sentetik olumsuz ve bütünleştirme testleri
   docs/
-    README.md  ARCHITECTURE.md  BUILD.md
-    DESIGN_SYSTEM.md  DESIGN_COMPONENTS.html
-    LANGUAGE_POLICY.md  PARDUS_SUPPORT.md  OPTIONAL_FEATURES.md
-    SECURITY_FEATURE_REGISTER.md  TURKISH_WEB_COMPATIBILITY.md
-    adr/                              # İncelenmiş kararlar; sonra oluşturulur
-  chromium/
-    upstream.lock.json                # Kaynak, araç, bağımlılık kimlikleri
-    patches/series.json
-    patches/{branding,integration,privacy,security}/
-  yuva/
-    app/                              # Marka ve GRIT kaynakları
-    browser/{policy,storage,search,ui}/
-    components/{kalkan,trusted_sites,bank_security,content_protection}/
-    components/{component_security,privacy_signals}/
-    optional/prayer_times/             # Sonraki isteğe bağlı yardımcı
-    updater/
-  build/{config,toolchains,packaging}/
-  build/packaging/pardus/debian/       # Yerel .deb tanımları
-  tools/{bootstrap,patches,licenses,release}/
-  tests/{browser,privacy,security,compatibility,fixtures,fuzz}/
-  trusted-sites/{schema,fixtures,governance}/
-  content-protection/{schema,fixtures,governance}/
-  third_party/                        # Yalnız incelenmiş ek bileşen/bildirimler
-  .github/{workflows,CODEOWNERS,ISSUE_TEMPLATE}/
+    BUILD.md  DESIGN_SYSTEM.md  DESIGN_COMPONENTS.html
+    PARDUS_SUPPORT.md  LANGUAGE_POLICY.md ve diğer tasarımlar
+    adr/
+  .github/workflows/
+    development-tools.yml
+    upstream-watch.yml
+  .gitignore
 ```
 
-Chromium ayrı ve Git dışında bırakılan çalışma alanına alınır. İndirilen kaynak/build çıktısı, profil, gerçek gezinme yakalaması, test hesabı, anahtar ve sırlar depoya girmez. Uygulanmış yama çıktı ağacı elle düzenlenip asıl yama sanılamaz. Kilit ve yayın manifest'i Yuva commit'i, Chromium commit'i, sıra/hash ve bütün girdileri bağlar; gizli depo/hesap olmadan kaynak yeniden kurulabilmelidir.
+## Gerektiğinde eklenecek Yuva kaynakları
 
-Üretimde `yuva-trusted-sites` kurum kayıt/kanıt/kapsamı; `yuva-content-data` içerik kaynak/lisans/düzeltme paketini ayrı yetkiyle yayımlar. Takip filtrelerinin de bağımsız rolü bulunur. Doğrulayıcı paylaşılabilir; yürütülebilir, kimlik kaydı ve engel listesi imza yetkisi paylaşılamaz. Operasyon sınırı oluşmadan gereksiz yeni depolar açılmaz.
+```text
+patches/{chromium,privacy}/
+components/{yuva_kalkan,trusted_sites,content_protection,component_security}/
+components/{bank_security,privacy_signals,updater}/
+components/browser/{policy,storage,search,ui}/
+components/optional/prayer_times/
+branding/
+resources/
+config/upstream.lock.json            # Tam çözülmüş bağımlılık/araç kilidi
+build/{config,toolchains,packaging}/
+build/packaging/pardus/debian/
+tests/{browser,privacy,security,compatibility,fixtures,fuzz}/
+trusted-sites/{schema,fixtures,governance}/
+content-protection/{schema,fixtures,governance}/
+third_party/                         # Yalnız incelenmiş küçük ek bileşen/bildirim
+```
 
-Sorumlular: Chromium/yama; mahremiyet/depolama; güvenlik/güven kökü; platform/yayın; ayrı Pardus sorumlusu; kurum kaydı inceleyicileri; içerik lisans/yanlış pozitif; Türkçe/erişilebilirlik. Kritik değişiklikte iki kişi, üretim kaydında iki bağımsız kanıt incelemesi gerekir. Tek kişiye bağlı üretim anahtarı veya nöbet sürdürülebilir değildir.
+Boş dizin veya uygulanmamış sahte bileşen eklemek ilerleme sayılmaz. Kod/dizin/parametre adları İngilizce; açıklamalar ve yorumlar Türkçedir. Tasarım HTMLsi ürün WebUI kodu değildir.
 
-Kök ARCHITECTURE asıl kaynaktır; docs içindeki aynı adlı dosya bağlantıdır. Diğer belgeler protokol parametresini kopyalamak yerine asıl tasarıma bağlanır. Kabul edilmiş karar değişince önceki gerekçe ADR arşivinde kalır. Görsel HTML yalnız tasarım referansıdır, ürün WebUI kaynağı olarak taşınmaz.
+## Dış kaynak alanı
+
+Depoyla kardeş, Git'e eklenmeyen çalışma alanı:
+
+```text
+Projects/
+  yuva-browser/                      # Küçük, yayımlanabilir Yuva deposu
+  yuva-chromium/                     # Sonraki açık bootstrap eylemiyle hazırlanacak
+    depot_tools/
+    src/                             # Sabit upstream + uygulanmış Yuva katmanı
+      out/
+    manifests/
+```
+
+Araçlar iç içe repo/çalışma alanını reddeder. İndirilen Chromium, depot_tools, bağımlılık, cache, profil ve çıktı depoya girmez. Kaynak arşivi/ikili dağıtım gerektiğinde GitHub Release veya tanımlı artefakt depolaması kullanılır; kaynak sağlama lisans yükümlülükleri sürer.
+
+`.gitignore` yaygın yolları dışlar. `scripts/check-repository` ayrıca **Git indeksindeki gerçek blob'ları** inceler: bilinen Chromium/çıktı/cache yolları, symlink/submodule, 5 MiB tek dosya, 100 MiB toplam ve 20.000 dosya sınırı. Bunlar ilk ince depo bütçesidir; her türlü gizlenmiş bağımlılığı/sırrı saptama garantisi değildir. Bir istisna gelecekte ayrı incelenmiş politika kararı ister.
+
+## Sahiplik ve veri depoları
+
+Üretimde `yuva-trusted-sites` kurum kanıt/kapsamını; `yuva-content-data` içerik köken/lisans/düzeltmesini ayrı yayın yetkisiyle tutar. Tarayıcı bu verileri imzayla doğrular; kurum alan adları C++ sabit listesi olmaz. Doğrulayıcı kod paylaşılabilir, binary/registry/content/filter imza yetkisi paylaşılmaz. Operasyon kurulmadan bu depolar açılmış sayılmaz.
+
+Sorumluluklar: Chromium/yama, güvenlik/depolama, platform/yayın, ayrı Pardus, kurum doğrulama, içerik yanlış pozitif/lisans, Türkçe/erişilebilirlik. Kritik yetki sınırları ve üretim kayıtlarında iki bağımsız inceleme hedefi korunur. İlk geliştirici araçları bu operasyonun tamamlandığı anlamına gelmez.
+
+Her anlamlı geliştirme PRı README durumunu günceller; plan/uygulama/derleme/platform testi ayrılır. Asıl mimari köktedir, docs/ARCHITECTURE bağlantı verir; eski ADR gerekçeleri arşivlenir.
