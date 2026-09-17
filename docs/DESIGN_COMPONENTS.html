@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="tr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Yuva · Tasarım bileşenleri</title>
+<style>
+:root {
+  color-scheme: light;
+  --yuva-background: #FFFFFF;
+  --yuva-surface: #F6F7F9;
+  --yuva-surface-elevated: #FFFFFF;
+  --yuva-text-primary: #18181B;
+  --yuva-text-secondary: #52525B;
+  --yuva-border: #E4E4E7;
+  --yuva-control-border: #71717A;
+  --yuva-accent: #2563EB;
+  --yuva-action-background: #2563EB;
+  --yuva-action-text: #FFFFFF;
+  --yuva-success: #15803D;
+  --yuva-warning: #B45309;
+  --yuva-danger: #B91C1C;
+  --yuva-security-verified: var(--yuva-success);
+  --yuva-security-warning: var(--yuva-warning);
+  --yuva-security-danger: var(--yuva-danger);
+  --yuva-space-small: 8px;
+  --yuva-space-medium: 16px;
+  --yuva-space-large: 24px;
+  --yuva-radius-control: 6px;
+  --yuva-radius-panel: 8px;
+  --yuva-radius-dialog: 10px;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --yuva-background: #18181B;
+  --yuva-surface: #202023;
+  --yuva-surface-elevated: #27272A;
+  --yuva-text-primary: #FAFAFA;
+  --yuva-text-secondary: #A1A1AA;
+  --yuva-border: #3F3F46;
+  --yuva-control-border: #A1A1AA;
+  --yuva-accent: #60A5FA;
+  --yuva-success: #22C55E;
+  --yuva-warning: #F59E0B;
+  --yuva-danger: #F87171;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.6 system-ui, sans-serif; color: var(--yuva-text-primary); background: var(--yuva-background); }
+a { color: var(--yuva-accent); text-underline-offset: 3px; }
+button, input, select { font: inherit; color: inherit; }
+button, select { cursor: pointer; }
+button, .button, select, input { min-height: 36px; padding: 6px 12px; border: 1px solid var(--yuva-control-border); border-radius: var(--yuva-radius-control); background: var(--yuva-surface-elevated); }
+button:hover, select:hover { background: var(--yuva-surface); }
+button.primary { background: var(--yuva-action-background); color: var(--yuva-action-text); border-color: var(--yuva-action-background); }
+button.danger { color: var(--yuva-danger); }
+button:disabled { cursor: default; color: var(--yuva-text-secondary); border-style: dashed; }
+:focus-visible { outline: 3px solid var(--yuva-accent); outline-offset: 3px; }
+button.primary:focus-visible { box-shadow: 0 0 0 3px var(--yuva-background); }
+header, main, footer { max-width: 1120px; margin: auto; padding: 0 var(--yuva-space-large); }
+header { padding-top: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--yuva-border); }
+.topline, .row, .actions, .settings-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.topline { justify-content: space-between; }
+.brand { font-size: 20px; font-weight: 650; letter-spacing: -.4px; }
+.edition { color: var(--yuva-text-secondary); font-size: 13px; }
+h1 { font-size: clamp(28px, 4vw, 38px); font-weight: 620; letter-spacing: -1px; margin: 28px 0 8px; line-height: 1.2; }
+h2 { font-size: 19px; font-weight: 620; margin: 0 0 6px; }
+h3 { font-size: 16px; margin: 0 0 8px; }
+p { margin: 0 0 12px; }
+.muted, .caption { color: var(--yuva-text-secondary); }
+.caption { font-size: 13px; }
+.lead { max-width: 720px; }
+.theme-control { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+.section { padding: 30px 0; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 32px; border-bottom: 1px solid var(--yuva-border); }
+.section-number { font-size: 12px; color: var(--yuva-text-secondary); margin-bottom: 6px; }
+.stage { padding: var(--yuva-space-large); border: 1px solid var(--yuva-border); background: var(--yuva-surface); border-radius: var(--yuva-radius-panel); min-width: 0; }
+.stack { display: grid; gap: var(--yuva-space-medium); }
+.field { display: grid; gap: 6px; max-width: 360px; }
+input { min-width: 0; width: 100%; }
+.toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.icon-button { width: 36px; padding: 4px; }
+.address { flex: 1; min-width: 180px; }
+.tabs { display: flex; align-items: end; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.tab { min-width: 140px; border-bottom: 3px solid var(--yuva-border); }
+.tab[aria-selected="true"] { border-bottom-color: var(--yuva-accent); background: var(--yuva-surface-elevated); }
+.tabpanel { font-size: 14px; color: var(--yuva-text-secondary); }
+.badge { display: inline-flex; align-items: center; gap: 7px; font-weight: 550; font-size: 14px; }
+.verified { color: var(--yuva-security-verified); }
+.warning { color: var(--yuva-security-warning); }
+.danger { color: var(--yuva-security-danger); }
+.shield { width: 19px; height: 19px; flex: none; }
+.panel { background: var(--yuva-surface-elevated); border: 1px solid var(--yuva-border); padding: 20px; border-radius: var(--yuva-radius-panel); }
+.panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.metrics { margin: 0 0 16px; padding: 0; list-style: none; }
+.metrics li { display: flex; gap: 12px; align-items: baseline; font-size: 14px; }
+.metrics strong { min-width: 20px; font-variant-numeric: tabular-nums; }
+.separator { border-top: 1px solid var(--yuva-border); padding-top: 16px; }
+.menu-demo { margin: 0; padding: 8px; list-style: none; border: 1px solid var(--yuva-border); border-radius: var(--yuva-radius-panel); background: var(--yuva-surface-elevated); width: 240px; max-width: 100%; }
+.menu-demo li { padding: 8px 10px; display: flex; justify-content: space-between; gap: 20px; }
+kbd { font: 12px/1.8 system-ui, sans-serif; color: var(--yuva-text-secondary); }
+.tooltip-wrap { display: inline-flex; position: relative; }
+.tooltip { display: none; position: absolute; top: calc(100% + 8px); left: 0; z-index: 2; background: var(--yuva-surface-elevated); border: 1px solid var(--yuva-control-border); border-radius: var(--yuva-radius-control); padding: 6px 10px; width: max-content; font-size: 13px; }
+.tooltip-wrap:hover .tooltip:not([hidden]), .tooltip-wrap:focus-within .tooltip:not([hidden]) { display: block; }
+.toast { padding: 10px 14px; border: 1px solid var(--yuva-control-border); background: var(--yuva-surface-elevated); border-radius: var(--yuva-radius-control); font-size: 14px; }
+.settings-row { justify-content: space-between; }
+.settings-row p { margin: 0; }
+.warning-panel { border: 2px solid var(--yuva-security-warning); }
+.warning-panel h3 { font-size: 22px; margin-top: 8px; line-height: 1.35; }
+.host { font: 15px/1.6 ui-monospace, monospace; overflow-wrap: anywhere; }
+.new-tab { min-height: 240px; text-align: center; display: grid; align-content: center; gap: 18px; }
+.new-tab .brand { font-size: 28px; }
+.new-tab .search-preview { max-width: 430px; width: 100%; margin: auto; }
+.new-tab input { text-align: left; }
+dialog { color: var(--yuva-text-primary); background: var(--yuva-surface-elevated); border: 1px solid var(--yuva-control-border); border-radius: var(--yuva-radius-dialog); padding: 28px; max-width: min(480px, calc(100% - 32px)); }
+dialog::backdrop { background: var(--yuva-background); opacity: .8; }
+footer { padding-top: 28px; padding-bottom: 40px; font-size: 13px; color: var(--yuva-text-secondary); }
+[hidden] { display: none !important; }
+@media (max-width: 760px) { .section { grid-template-columns: 1fr; gap: 14px; } .stage { padding: 16px; } header { padding-top: 24px; } .theme-control { margin-top: 8px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; animation: none !important; transition: none !important; } }
+@media (forced-colors: active) { :root { --yuva-background: Canvas; --yuva-surface: Canvas; --yuva-surface-elevated: Canvas; --yuva-text-primary: CanvasText; --yuva-text-secondary: CanvasText; --yuva-border: CanvasText; --yuva-control-border: ButtonText; --yuva-accent: Highlight; --yuva-action-background: ButtonFace; --yuva-action-text: ButtonText; --yuva-success: CanvasText; --yuva-warning: CanvasText; --yuva-danger: CanvasText; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="topline"><div><span class="brand">Yuva</span> <span class="edition">/ Tasarım notları · 01</span></div>
+    <div class="theme-control"><label for="theme-mode">Görünüm</label><select id="theme-mode"><option value="system">Sistem</option><option value="light">Açık</option><option value="dark">Koyu</option></select></div>
+  </div>
+  <h1>Sakin bir arayüz.<br>Açık bir güvenlik dili.</h1>
+  <p class="lead muted">Nötr yüzeyler, ölçülü mavi vurgu ve anlaşılır Türkçe. Yuva'nın tasarım sözleşmesi için küçük bir bileşen envanteri.</p>
+  <p class="caption">Bu sayfa yalnızca tasarım örneğidir. Güvenlik durumları ve sayaçlar temsildir; hiçbir site doğrulanmaz. <a href="DESIGN_SYSTEM.md">Tasarım belgesi</a></p>
+</header>
+<main>
+<section class="section" aria-labelledby="controls-title">
+  <div><div class="section-number">01 / Temel kontroller</div><h2 id="controls-title">Düğme ve giriş</h2><p class="caption">Button · Input<br>Görünür etiket, okunur sınır, net eylem.</p></div>
+  <div class="stage stack"><div class="actions"><button class="primary" id="open-dialog">Örneği incele</button><button id="show-toast">Bildirim örneği</button><button disabled>Devre dışı</button></div><div class="field"><label for="favorite-name">Sık kullanılan adı</label><input id="favorite-name" value="Belgeler" aria-describedby="field-help"><span class="caption" id="field-help">Etiket, giriş alanının dışında her zaman görünür.</span></div></div>
+</section>
+<section class="section" aria-labelledby="browser-title">
+  <div><div class="section-number">02 / Tarayıcı</div><h2 id="browser-title">Sekme ve adres</h2><p class="caption">Tab · Address Bar<br>Tanıdık düzen, okunur adres.</p></div>
+  <div class="stage"><div class="tabs" role="tablist" aria-label="Örnek sekmeler"><button class="tab" id="tab-current" role="tab" aria-controls="tab-content" aria-selected="true">Örnek sayfa</button><button class="tab" id="tab-new" role="tab" aria-controls="tab-content" aria-selected="false" tabindex="-1">Yeni sekme</button></div><div class="toolbar"><button class="icon-button" aria-label="Geri, yalnız tasarım örneği" disabled>←</button><button class="icon-button" aria-label="İleri, yalnız tasarım örneği" disabled>→</button><label class="address"><span class="caption">Adres · örnek</span><input aria-label="Örnek adres" value="https://bank.example" readonly></label></div><p class="tabpanel" role="tabpanel" id="tab-content" aria-labelledby="tab-current" tabindex="0">Ayrılmış örnek alan adı; gerçek bir banka bağlantısı değildir.</p></div>
+</section>
+<section class="section" aria-labelledby="security-title">
+  <div><div class="section-number">03 / Güvenlik</div><h2 id="security-title">Durum ve doğrulama</h2><p class="caption">Security Badge · Trusted Site Badge<br>Anlamı metin taşır; renk destekler.</p></div>
+  <div class="stage stack"><span class="badge verified"><span aria-hidden="true">✓</span> Doğrulanmış kamu sitesi <span class="caption">· örnek</span></span><span class="badge verified"><span aria-hidden="true">✓</span> Doğrulanmış banka <span class="caption">· örnek</span></span><span class="badge warning"><span aria-hidden="true">⚠</span> Doğrulama bilgisi güncel değil</span><p class="caption">Doğrulama, alan adı kaydı ve normal TLS denetimiyle sınırlıdır. Kurumun veya içeriğin güvenilirliğini garanti etmez.</p></div>
+</section>
+<section class="section" aria-labelledby="shield-title">
+  <div><div class="section-number">04 / Mahremiyet</div><h2 id="shield-title">Yuva Kalkan</h2><p class="caption">Yuva Kalkan<br>Bir bakışta durum, gerektiğinde ayrıntı.</p></div>
+  <div class="stage"><div class="panel"><div class="panel-header"><strong>Yuva Kalkan</strong><span class="badge verified"><svg class="shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 3 20 6v6c0 4-4 7-8 9-4-2-8-5-8-9V6Z"/><path d="m8 12 3 3 5-6"/></svg>Koruma açık</span></div><div class="field"><label for="shield-level">Koruma · görünüm örneği</label><select id="shield-level"><option value="standard">Standart — Takipçileri engeller</option><option value="strict">Sıkı — Takipçileri ve reklamları engeller</option><option value="off">Kapalı — Bu sitede filtreler kapalı</option></select><p class="caption">Oltalama, zararlı site ve zorunlu içerik koruması bu seçimden etkilenmez. Bu belgede gerçek filtre uygulanmaz.</p></div><ul class="metrics"><li><strong>12</strong> takip isteği engellendi</li><li><strong>4</strong> tanesi reklam takipçisi</li><li><strong>3</strong> izleme parametresi temizlendi</li></ul><div class="separator"><p>Site verileri: <strong>Yuva kapanınca sil</strong></p><button disabled>Bu siteyi hatırla</button><p class="caption">Hatırlama yalnız tasarımda; bu örnekte uygulanmadı.</p></div></div></div>
+</section>
+<section class="section" aria-labelledby="feedback-title">
+  <div><div class="section-number">05 / Yardımcı yüzeyler</div><h2 id="feedback-title">Menü ve geri bildirim</h2><p class="caption">Menu · Dialog · Tooltip · Toast<br>Güvenlik uyarısını küçük bildirime saklamayız.</p></div>
+  <div class="stage stack"><ul class="menu-demo" aria-label="Menü görünümü, etkileşimsiz örnek"><li>Yeni sekme <kbd>Ctrl/⌘ T</kbd></li><li>İndirmeler</li><li>Ayarlar</li></ul><div class="row"><button id="open-dialog-secondary">İletişim kutusu örneği</button><span class="tooltip-wrap"><button id="tooltip-trigger" aria-describedby="tooltip-help">Kısa açıklama</button><span class="tooltip" role="tooltip" id="tooltip-help">Klavye odağında da görünür.</span></span></div><div class="toast" role="status" aria-live="polite" id="toast">✓ Ayar kaydedildi. <span class="caption">Örnek bildirim.</span></div></div>
+</section>
+<section class="section" aria-labelledby="warning-title">
+  <div><div class="section-number">06 / Öncelikli durum</div><h2 id="warning-title">Açık bir uyarı</h2><p class="caption">Warning<br>Güvenli eylem en belirgin seçenektir.</p></div>
+  <div class="stage"><div class="panel warning-panel"><span class="badge warning"><span aria-hidden="true">⚠</span> DİKKAT — Sahte site olabilir</span><h3>Bu adres gerçek site olmayabilir.</h3><p>Bu site, doğrulanmış bir banka adresine çok benziyor.</p><p>Gitmek istediğiniz resmî site bu mu?<br><strong class="host">bank.example</strong></p><div class="actions"><button class="primary" data-example-action="official">Resmî siteye git</button><button data-example-action="back">Geri dön</button></div><details><summary>Gelişmiş seçenekler</summary><p class="caption">Bu yalnız bir yerleşim örneğidir. Düğmeler başka site açmaz; gerçek üründe resmî hedef yalnız güncel imzalı kayıttan seçilir. Tek tıkla uyarıyı geçme seçeneği yoktur.</p></details></div></div>
+</section>
+<section class="section" aria-labelledby="settings-title">
+  <div><div class="section-number">07 / Tercihler</div><h2 id="settings-title">Ayar satırı</h2><p class="caption">Settings Row<br>Tercih açık, açıklama yakında.</p></div>
+  <div class="stage"><div class="settings-row"><div><label for="theme-setting"><strong>Görünüm</strong></label><p class="caption">Sistem seçimi işletim sistemini izler.</p></div><select id="theme-setting"><option value="system">Sistem</option><option value="light">Açık</option><option value="dark">Koyu</option></select></div><p class="caption" id="theme-status" aria-live="polite"></p></div>
+</section>
+<section class="section" aria-labelledby="new-tab-title">
+  <div><div class="section-number">08 / Yeni sekme</div><h2 id="new-tab-title">Sadece başlangıç</h2><p class="caption">Haber, reklam, akış veya sponsor bağlantı yok.</p></div>
+  <div class="stage new-tab"><div class="brand">Yuva</div><label class="search-preview"><span class="caption">Ara veya adres yaz</span><input aria-label="Yeni sekme arama görünümü, etkileşimsiz örnek" placeholder="Ara veya adres yaz" readonly></label><div><p>Sık Kullanılanlar</p><button disabled>+ Ekle</button></div></div>
+</section>
+</main>
+<dialog id="example-dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description"><h2 id="dialog-title">Tasarım örneği</h2><p id="dialog-description">Bu iletişim kutusu yalnız odak, düğme ve tema davranışını gösterir. Tarayıcı verileri değişmez.</p><div class="actions"><button class="primary" id="close-dialog" autofocus>Anladım</button><button id="cancel-dialog">Kapat</button></div></dialog>
+<footer>Yuva · Özel olan, özel kalır. <span>Bu envanterde dış kaynak, uzak font, analitik veya ağ isteği kullanan betik yoktur. Gerçek OS ve ekran okuyucu testleri ürün uygulamasında ayrıca yapılacaktır.</span></footer>
+<script>
+// Bu belge ürün uygulaması değildir; yalnız tema ve temel etkileşim örnekleri içerir.
+const themeControls = [...document.querySelectorAll('#theme-mode, #theme-setting')];
+const systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+let themeMode = 'system';
+function applyTheme() {
+  const resolvedTheme = themeMode === 'system' ? (systemTheme.matches ? 'dark' : 'light') : themeMode;
+  document.documentElement.dataset.theme = resolvedTheme;
+  themeControls.forEach(control => { control.value = themeMode; });
+  document.querySelector('#theme-status').textContent = `Şu an ${resolvedTheme === 'dark' ? 'koyu' : 'açık'} görünüm kullanılıyor. Yeniden başlatma gerekmez.`;
+}
+themeControls.forEach(control => control.addEventListener('change', event => { themeMode = event.target.value; applyTheme(); }));
+systemTheme.addEventListener('change', applyTheme);
+applyTheme();
+const exampleDialog = document.querySelector('#example-dialog');
+let dialogTrigger;
+function openDialog(event) { dialogTrigger = event.currentTarget; exampleDialog.showModal(); }
+document.querySelectorAll('#open-dialog, #open-dialog-secondary').forEach(button => button.addEventListener('click', openDialog));
+document.querySelectorAll('#close-dialog, #cancel-dialog').forEach(button => button.addEventListener('click', () => exampleDialog.close()));
+exampleDialog.addEventListener('close', () => dialogTrigger?.focus());
+let toastCount = 0;
+function showExampleFeedback() {
+  toastCount += 1;
+  document.querySelector('#toast').textContent = `✓ Örnek etkileşim tamamlandı (${toastCount}). Tarayıcı verileri değişmedi.`;
+}
+document.querySelector('#show-toast').addEventListener('click', showExampleFeedback);
+document.querySelectorAll('[data-example-action]').forEach(button => button.addEventListener('click', showExampleFeedback));
+const tooltipTrigger = document.querySelector('#tooltip-trigger');
+const tooltipHelp = document.querySelector('#tooltip-help');
+tooltipTrigger.addEventListener('keydown', event => { if (event.key === 'Escape') tooltipHelp.hidden = true; });
+['focus', 'mouseenter'].forEach(eventName => tooltipTrigger.addEventListener(eventName, () => { tooltipHelp.hidden = false; }));
+const tabs = [...document.querySelectorAll('[role="tab"]')];
+function selectTab(tab) {
+  tabs.forEach(item => { const selected = item === tab; item.setAttribute('aria-selected', String(selected)); item.tabIndex = selected ? 0 : -1; });
+  const panel = document.querySelector('#tab-content');
+  panel.setAttribute('aria-labelledby', tab.id);
+  panel.textContent = tab.id === 'tab-current' ? 'Ayrılmış örnek alan adı; gerçek bir banka bağlantısı değildir.' : 'Yeni sekme görünümü aşağıdaki envanter bölümünde yer alır.';
+}
+tabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => selectTab(tab));
+  tab.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    selectTab(tabs[nextIndex]); tabs[nextIndex].focus();
+  });
+});
+</script>
+</body>
+</html>
