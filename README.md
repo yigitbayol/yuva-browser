@@ -11,7 +11,7 @@
 | Mimari | Chromium Stable + küçük Yuva deposu + ayrı bileşen/yama katmanı seçildi. |
 | Kaynak kimliği | Yuva `0.1.0-dev`, Chromium `153.0.8010.53`, yama kümesi `1`; tam commit ve DEPS özeti [sabitlendi](config/versions.json). Henüz derlenmedi. |
 | Geliştirici araçları | Ortam denetimi, kaynak kök kilidi, açık seçenekle güvenli kök getirme, upstream sürüm/yama denetimi ve Git indeks koruması eklendi. Varsayılan bootstrap indirmez. |
-| Doğrulama | 55 araç testi yerelde geçti; Windows/macOS/Linux için [güncel araç CI sonuçları](https://github.com/yigitbayol/yuva-browser/actions/workflows/development-tools.yml) yayımlanıyor. Kök getirme testleri küçük yerel Git depolarını kullanır. Bunlar tarayıcı derleme veya Pardus uyumluluk testleri değildir. |
+| Doğrulama | 55 araç testi yerelde ve [Windows/macOS/Linux CI'sının her birinde geçti](https://github.com/yigitbayol/yuva-browser/actions/runs/35280081007). Kök getirme testleri küçük yerel Git depolarını kullanır. Bunlar tarayıcı derleme veya Pardus uyumluluk testleri değildir. |
 | Tarayıcı özellikleri | Kalkan, geçici depolama, banka/kamu koruması ve içerik koruması tasarlandı; tarayıcıya henüz uygulanmadı. |
 | Platformlar | Windows, macOS, genel Linux ve Pardus hedefleniyor; hiçbirinin Yuva derlemesi henüz doğrulanmadı. Pardus için ayrı testler ve yerel `.deb` zorunlu. |
 
