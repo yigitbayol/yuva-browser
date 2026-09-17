@@ -12,6 +12,9 @@
 **/_cipd/
 **/.gclient*
 **/.git_cache/
+.yuva-bootstrap.*
+.yuva-empty-hooks/
+.yuva-state-*
 
 # build/ altındaki kaynak yapılandırması korunur; üretilen çıktılar dışlanır.
 out/

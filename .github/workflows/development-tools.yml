@@ -37,6 +37,8 @@ jobs:
         run: python -m unittest discover -s tests/tooling -v
       - name: Sabit meta veri ve yama bütünlüğü
         run: python scripts/check-upstream
+      - name: Kaynak kök kilidinin tutarlılığı
+        run: python scripts/check-lock
       - name: Git ağacı ve boyut bütçesi
         run: python scripts/check-repository
       - name: İndirmesiz hazırlama planı

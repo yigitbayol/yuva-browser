@@ -21,7 +21,7 @@ def path_problem(name):
         return "Güvenli olmayan dosya yolu"
     if parts[0] in BLOCKED_ROOTS or any(part in BLOCKED_DIRECTORIES or part.endswith((".app", ".dsym")) for part in parts[:-1]):
         return "Kaynak bağımlılığı, çıktı veya önbellek dizini"
-    if path.suffix.lower() in BLOCKED_SUFFIXES or parts[-1].startswith(".gclient"):
+    if path.suffix.lower() in BLOCKED_SUFFIXES or parts[-1].startswith((".gclient", ".yuva-bootstrap.", ".yuva-state-")) or ".yuva-empty-hooks" in parts:
         return "İkili/üretilmiş çıktı, yerel araç ayarı veya özel anahtar"
     if (parts[-1] == ".env" or parts[-1].startswith(".env.")) and parts[-1] != ".env.example":
         return "Yerel ortam/sır dosyası"

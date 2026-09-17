@@ -10,10 +10,12 @@ yuva-browser/
   ARCHITECTURE.md ve diğer tasarım belgeleri
   config/
     versions.json                    # Açık kaynak kimliği; tam build kilidi değil
+    upstream.lock.json               # Kaynak/yama bağları; yalnız source_roots kapsamı
   patches/
     series.json                      # Sürüm 1; henüz yama yok
   scripts/
-    bootstrap                        # Plan ve önkoşul kapısı
+    bootstrap                        # Plan/önkoşul; açık seçenekle kök getirme
+    check-lock                       # Kaynak kök kilidi denetimi
     doctor                           # Salt okunur ortam denetimi
     check-upstream                   # Sürüm/hash/yama uyumu
     check-repository                 # Git indeksi ve boyut bütçesi
@@ -39,7 +41,6 @@ components/browser/{policy,storage,search,ui}/
 components/optional/prayer_times/
 branding/
 resources/
-config/upstream.lock.json            # Tam çözülmüş bağımlılık/araç kilidi
 build/{config,toolchains,packaging}/
 build/packaging/pardus/debian/
 tests/{browser,privacy,security,compatibility,fixtures,fuzz}/
@@ -65,6 +66,8 @@ Projects/
 ```
 
 Araçlar iç içe repo/çalışma alanını reddeder. İndirilen Chromium, depot_tools, bağımlılık, cache, profil ve çıktı depoya girmez. Kaynak arşivi/ikili dağıtım gerektiğinde GitHub Release veya tanımlı artefakt depolaması kullanılır; kaynak sağlama lisans yükümlülükleri sürer.
+
+`upstream.lock.json` sonraki sürümde çözülmüş bağımlılık/araç girdileriyle genişleyecek. Mevcut `source_roots` kapsamı tam kilit değildir. Dış alandaki `.yuva-bootstrap.*` işlem durumu ve `.yuva-empty-hooks/` dizini yerel hazırlığa aittir; Git'e eklenmez.
 
 `.gitignore` yaygın yolları dışlar. `scripts/check-repository` ayrıca **Git indeksindeki gerçek blob'ları** inceler: bilinen Chromium/çıktı/cache yolları, symlink/submodule, 5 MiB tek dosya, 100 MiB toplam ve 20.000 dosya sınırı. Bunlar ilk ince depo bütçesidir; her türlü gizlenmiş bağımlılığı/sırrı saptama garantisi değildir. Bir istisna gelecekte ayrı incelenmiş politika kararı ister.
 

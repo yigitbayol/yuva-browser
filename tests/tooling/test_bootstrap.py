@@ -45,6 +45,38 @@ class BootstrapTests(unittest.TestCase):
         self.assertEqual(status, 1)
         self.assertFalse(report["source_prepared"])
 
+    def test_failed_preflight_prevents_network_and_checkout(self):
+        with patch("scripts.yuva_dev.bootstrap.inspect_environment", return_value={"checks": [], "preflight_ready": False}):
+            with patch("scripts.yuva_dev.bootstrap.verify_network") as network, patch("scripts.yuva_dev.bootstrap.prepare_roots") as prepare:
+                with contextlib.redirect_stderr(io.StringIO()):
+                    status, report = self.invoke(["--fetch-roots"])
+                network.assert_not_called()
+                prepare.assert_not_called()
+        self.assertEqual(status, 1)
+        self.assertFalse(report["source_roots_prepared"])
+
+    def test_new_upstream_blocks_stale_source_fetch(self):
+        with patch("scripts.yuva_dev.bootstrap.inspect_environment", return_value={"checks": [], "preflight_ready": True}):
+            with patch("scripts.yuva_dev.bootstrap.verify_network", return_value={"update_available": True}), patch("scripts.yuva_dev.bootstrap.prepare_roots") as prepare:
+                with contextlib.redirect_stderr(io.StringIO()):
+                    status, report = self.invoke(["--fetch-roots"])
+                prepare.assert_not_called()
+        self.assertEqual(status, 1)
+        self.assertFalse(report["source_roots_prepared"])
+
+    def test_root_fetch_never_claims_dependency_or_build_readiness(self):
+        notice = io.StringIO()
+        with patch("scripts.yuva_dev.bootstrap.inspect_environment", return_value={"checks": [], "preflight_ready": True}):
+            with patch("scripts.yuva_dev.bootstrap.verify_network", return_value={"update_available": False}), patch("scripts.yuva_dev.bootstrap.prepare_roots", return_value={"phase": "roots_ready"}):
+                with contextlib.redirect_stderr(notice):
+                    status, report = self.invoke(["--fetch-roots"])
+        self.assertEqual(status, 0)
+        self.assertTrue(report["source_roots_prepared"])
+        self.assertFalse(report["source_prepared"])
+        self.assertFalse(report["build_ready"])
+        self.assertIn("Chromium:", notice.getvalue())
+        self.assertIn("Hedef dizin:", notice.getvalue())
+
 
 if __name__ == "__main__":
     unittest.main()

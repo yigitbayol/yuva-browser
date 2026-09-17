@@ -10,22 +10,25 @@
 | --- | --- |
 | Mimari | Chromium Stable + küçük Yuva deposu + ayrı bileşen/yama katmanı seçildi. |
 | Kaynak kimliği | Yuva `0.1.0-dev`, Chromium `153.0.8010.53`, yama kümesi `1`; tam commit ve DEPS özeti [sabitlendi](config/versions.json). Henüz derlenmedi. |
-| Geliştirici araçları | Ortam denetimi, indirmesiz bootstrap planı, upstream sürüm/yama denetimi ve Git indeks koruması eklendi. |
-| Doğrulama | 36 araç testi yerelde ve [Windows/macOS/Linux CI'sının her birinde geçti](https://github.com/yigitbayol/yuva-browser/actions/runs/35278595752). [Çevrimiçi upstream denetimi de geçti](https://github.com/yigitbayol/yuva-browser/actions/runs/35278601704). Bunlar tarayıcı derleme testleri değildir. |
+| Geliştirici araçları | Ortam denetimi, kaynak kök kilidi, açık seçenekle güvenli kök getirme, upstream sürüm/yama denetimi ve Git indeks koruması eklendi. Varsayılan bootstrap indirmez. |
+| Doğrulama | 55 araç testi yerelde geçti; Windows/macOS/Linux için [güncel araç CI sonuçları](https://github.com/yigitbayol/yuva-browser/actions/workflows/development-tools.yml) yayımlanıyor. Kök getirme testleri küçük yerel Git depolarını kullanır. Bunlar tarayıcı derleme veya Pardus uyumluluk testleri değildir. |
 | Tarayıcı özellikleri | Kalkan, geçici depolama, banka/kamu koruması ve içerik koruması tasarlandı; tarayıcıya henüz uygulanmadı. |
 | Platformlar | Windows, macOS, genel Linux ve Pardus hedefleniyor; hiçbirinin Yuva derlemesi henüz doğrulanmadı. Pardus için ayrı testler ve yerel `.deb` zorunlu. |
 
-**Sıradaki adım:** Derleme ortamını nitelendirmek, DEPS/SDK/araç zinciri kilidini tamamlamak ve dış çalışma alanını hazırlayan gerçek bootstrap adımını geliştirmek. Ardından ilk saf Chromium referans derlemesi gelecek. Bu sırada Chromium kaynakları Git geçmişine alınmayacak.
+**Son geliştirme:** `bootstrap --fetch-roots` ve `check-lock` eklendi. Getirme ve hata durumları küçük yerel Git depolarıyla sınandı; gerçek Chromium henüz getirilmedi. Kilit şu anda yalnız iki kaynak kökünü kapsıyor; tam bağımlılık kilidi değil.
+
+**Sıradaki adım:** Derleme ortamını nitelendirmek; sabit gclient üzerinden DEPS/CIPD/GCS bağımlılık grafiğini, hook incelemesini ve SDK/araç zinciri kilidini tamamlamak. Ardından ilk saf Chromium referans derlemesi gelecek. [Aşamalar ve doğrulama sınırları](docs/DEPENDENCY_LOCK.md).
 
 Geliştirme araçlarını Chromium indirmeden denemek için:
 
 ```sh
 ./scripts/bootstrap --plan
+./scripts/check-lock
 ./scripts/doctor
 python3 -m unittest discover -s tests/tooling -v
 ```
 
-`doctor` eksik disk/SDK gibi engellerde hata koduyla durur. `bootstrap` şu anda yalnız plan ve önkoşul denetimi yapar; kaynak indirmez. Gereksinimler ve Windows komutları [derleme belgesinde](docs/BUILD.md).
+`doctor` eksik disk/SDK gibi engellerde hata koduyla durur. `bootstrap` varsayılan olarak yalnız plan ve önkoşul denetimi yapar. `--fetch-roots` büyük indirmeyi açıkça ister; ancak ortam/güncellik kapıları geçerse çalışır. Bağımlılıkları veya hook'ları çalıştırmaz ve tarayıcı derlemez. Gereksinimler ve Windows komutları [derleme belgesinde](docs/BUILD.md).
 
 [Mimari karar](docs/adr/0001-thin-chromium-layer.md) · [Sıralı işler ve durumları](IMPLEMENTATION_PLAN.md) · [Yol haritası](ROADMAP.md) · [Teknik belgeler](docs/README.md) · [Araç CI sonuçları](https://github.com/yigitbayol/yuva-browser/actions/workflows/development-tools.yml)
 
@@ -356,6 +359,7 @@ Yuva geliştirme hazırlığı aşamasındadır. Güncel gerçekleşen işler sa
 * [x] Faz 0 mimari, tehdit modeli ve tasarım belgeleri
 * [x] Kaynak başlangıç sürümü ve commit kaydı (tam bağımlılık kilidi henüz değil)
 * [x] İndirmesiz plan, ortam ve upstream denetim araçları
+* [x] Kaynak kök kilidi ve açık seçenekle güvenli getirme aracı (yerel Git testleri)
 * [ ] Tam bağımlılık kilidi, kaynak hazırlama ve ilk referans derlemesi
 * [ ] Google bağımlılıklarının analizi
 * [ ] Yuva marka ve temel arayüzü

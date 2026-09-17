@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "scope": "source_roots",
+  "source_baseline_sha256": "21a20b9ca2a8f3e30568edbf489c7e3828f4f23c2689cd619aa7a38590c22d27",
+  "patch_manifest_sha256": "9ce7895290cd0a825e8fc2e6eed4e9c40ae7bb40fd3783df64dc45fa05607185",
+  "roots": [
+    {
+      "id": "depot_tools",
+      "directory": "depot_tools",
+      "url": "https://chromium.googlesource.com/chromium/tools/depot_tools",
+      "revision": "1a91c4bb802179b50776aabcc7d8aa53901a8e80"
+    },
+    {
+      "id": "chromium",
+      "directory": "src",
+      "url": "https://chromium.googlesource.com/chromium/src",
+      "revision": "792bf6722e73a45aa9e47c163b9901bdc17f3230"
+    }
+  ],
+  "targets": [
+    "windows-x86_64",
+    "macos-arm64",
+    "macos-x86_64",
+    "linux-x86_64",
+    "pardus-23-x86_64",
+    "pardus-25-x86_64"
+  ],
+  "pending_stages": [
+    "dependency_graph",
+    "cipd_instances",
+    "gcs_objects",
+    "hook_review",
+    "toolchains",
+    "patch_application",
+    "build_configuration",
+    "platform_builds"
+  ]
+}

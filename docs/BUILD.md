@@ -1,6 +1,6 @@
 # Geliştirme ve derleme iş akışı
 
-Güncelleme: 18 Eylül 2026. İlk geliştirici araçları uygulandı. **Chromium henüz indirilmedi/derlenmedi; çalışan Yuva ikilisi yok.** Mevcut bootstrap yalnız plan/önkoşul aşamasıdır. Büyük indirmeyi otomatik başlatmaz.
+Güncelleme: 18 Eylül 2026. Geliştirici araçları ve açık seçenekle kök kaynak getirme uygulandı. **Gerçek Chromium henüz indirilmedi/derlenmedi; çalışan Yuva ikilisi yok.** Bootstrap varsayılan olarak büyük indirme başlatmaz. Kök getirme küçük yerel Git depolarında sınandı; tam bağımlılık hazırlığı henüz yok.
 
 ## Şimdi çalıştırılabilen komutlar
 
@@ -10,6 +10,7 @@ Python **3.11+** ve Git gerekir; Python paket kurulumu gerekmez. macOS/Linux'ta 
 ./scripts/bootstrap --plan
 ./scripts/doctor
 ./scripts/check-upstream
+./scripts/check-lock
 ./scripts/check-repository
 python3 -m unittest discover -s tests/tooling -v
 ```
@@ -21,11 +22,13 @@ Windows'ta dosyaya yönlendirilmiş Türkçe çıktılar için `python -X utf8 s
 | Komut | Gerçek davranışı |
 | --- | --- |
 | `bootstrap --plan` | Sabit sürüm, revizyon, Yuva/yama sürümü, dış hedef dizin ve disk bütçesini gösterir; ağ veya host aracı çalıştırmaz |
-| `bootstrap` | Plan + host önkoşullarını denetler; kaynak hazırlama henüz uygulanmadığı için sıfır olmayan sonuç verir |
+| `bootstrap` | Plan + host önkoşullarını denetler; açık getirme seçeneği verilmediği için sıfır olmayan sonuç verir |
+| `bootstrap --fetch-roots` | Ortam ve güncellik denetiminden sonra sabit iki Git kökünü getirir/doğrular; alt bağımlılık/hook/yama çalıştırmaz |
 | `doctor` | Disk, yol, mimari, Git/Python; Mac'te Xcode/SDK/APFS/RAM; kurulum/indirme yapmaz |
 | `check-upstream` | Yerel sürüm şeması, yama manifesti/sırası/hash; ağsız çalışır |
 | `check-upstream --network` | Küçük resmî meta verilerle Mac/Windows/Linux Stable sürümlerini, sabit etiketi/commit'i, DEPS hash'ini ve depot_tools commit'ini karşılaştırır |
 | `check-repository` | Git indeksindeki gerçek dosya yollarını, nesne boyutlarını ve yasak kaynak/çıktı kalıplarını denetler |
+| `check-lock` | Kaynak/yama özetleri, kök revizyonlar ve çözülmemiş aşamaların tutarlılığını denetler; ağ kullanmaz |
 
 Bütün araçlarda `--help` ve `--format json` kullanılabilir. JSON alan/enum değerleri İngilizce; açıklayıcı mesajlar Türkçedir. Çıkış `0`: istenen denetim başarılı; `1`: doğrulama/ortam/eksik uygulama engeli; `2`: geçersiz komut; `check-upstream` için `3`: incelenmesi gereken yeni upstream sürümü. `bootstrap --plan` başarısı hazırlanmış kaynak veya derleme kanıtı değildir.
 
@@ -43,7 +46,7 @@ Bütün araçlarda `--help` ve `--format json` kullanılabilir. JSON alan/enum d
 | `patchset_version` | `1`; [yama listesi](../patches/series.json) şu anda boş |
 | `scope` / `qualification` | `source_baseline` / `unbuilt` |
 
-Başlangıç [resmî Stable duyurusu](https://chromereleases.googleblog.com/search/label/Stable%20updates) ve [ChromiumDash](https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Mac&num=1) ile incelendi; çalışma anında yeniden kontrol edilmelidir. Mac için seçilen kaynak, Windows/Linux/Pardus yeterliliği anlamına gelmez. Hareketli “latest” ile build yapılmaz. Bu kayıt yalnız kaynak başlangıcıdır; çözümlenmiş DEPS/CIPD/Rust/SDK/derleyici/PGO girdilerini içeren tam `config/upstream.lock.json` sonraki aşamadır.
+Başlangıç [resmî Stable duyurusu](https://chromereleases.googleblog.com/search/label/Stable%20updates) ve [ChromiumDash](https://chromiumdash.appspot.com/fetch_releases?channel=Stable&platform=Mac&num=1) ile incelendi; çalışma anında yeniden kontrol edilmelidir. Mac için seçilen kaynak, Windows/Linux/Pardus yeterliliği anlamına gelmez. Hareketli “latest” ile build yapılmaz. `config/upstream.lock.json` artık bu kaydı ve yama manifestosunu bağlar; kapsamı yalnız `source_roots` olarak işaretlidir. Çözümlenmiş DEPS/CIPD/GCS/Rust/SDK/derleyici/PGO girdilerini içeren tam kilit sonraki aşamadır. [Kilit sözleşmesi](DEPENDENCY_LOCK.md).
 
 ## Disk, donanım ve çalışma alanı
 
@@ -56,7 +59,7 @@ Varsayılan dış çalışma alanı, depo ile kardeş `yuva-chromium/` dizinidir
 ./scripts/doctor --workspace /Volumes/Development/yuva-chromium
 ```
 
-Bunlar dizin oluşturmaz. Yuva deposu ile iç içe hedef, dosya hedefi ve kaçan symlink yolu reddedilir. macOS diski APFS olmalıdır. Büyük kaynak/araç indirme başlayacağı gelecekte sürüm/revizyon, yaklaşık disk ihtiyacı ve tam hedef önce gösterilecek; açık indirme eylemi olmadan devam edilmeyecek.
+Bunlar dizin oluşturmaz. Yuva deposu ile iç içe hedef ve dosya hedefi reddedilir; gerçek getirme yolunda hiçbir symlink bileşenine izin verilmez. macOS diski APFS olmalıdır. `--fetch-roots` öncesinde sürüm/revizyon, yaklaşık disk ihtiyacı ve tam hedef gösterilir; açık indirme seçeneği olmadan devam edilmez.
 
 18 Eylül yerel denetiminde Mac ARM64, 8 GiB RAM, yaklaşık 78 GiB boş alan ve yalnız seçili Command Line Tools bulundu. APFS/SDK erişimi var; disk bütçesi ve tam Xcode eksik. Bu geçici ölçüm başka makinenin durumunu göstermez. Yeni ortamda `doctor` tekrar çalıştırılır; otomatik Xcode kurulumu veya global güvenlik ayarı değişikliği yoktur.
 
@@ -85,10 +88,20 @@ Bu test temiz bağlamda uygulama uyumudur, güvenlik/derleme/çalışma uyumu de
 
 ## Sonraki tam bootstrap/build tasarımı
 
-Hedef akış `./scripts/bootstrap` → `./scripts/build` → `./scripts/run`. **`build` ve `run` henüz mevcut değildir.** Tam bootstrap için sıradaki işler:
+Hedef akış `./scripts/bootstrap` → `./scripts/build` → `./scripts/run`. **`build` ve `run` henüz mevcut değildir.** Aşağıdaki kök getirme uygulanmıştır; örnek komut büyük indirmeyi açıkça ister ve bu teslimde çalıştırılmamıştır:
+
+```bash
+./scripts/bootstrap --fetch-roots --workspace /Volumes/Development/yuva-chromium
+```
+
+Üst dizin önceden var olmalı, hedef yeni veya aynı kilitle tamamlanmış temiz Yuva alanı olmalıdır. Ortam kapısı geçmezse upstream isteği/fetch başlamaz. Yeni Stable saptanırsa önce kilit incelemesi gerekir. Hedef HEAD/origin, temiz Git ağacı, DEPS özeti ve VERSION doğrulanır. Sistem/global Git ayarları, haricî hook/filtreler ve alt modül getirme kullanılmaz; HTTPS doğrulaması korunur. Kaynaklar getirilse de `source_prepared` ve `build_ready` hâlâ `false` kalır; yalnız `source_roots_prepared` başarılı olabilir.
+
+Kesinti/hata durumu dış alandaki `.yuva-bootstrap.json` dosyasında saklanır. Aynı anda ikinci hazırlama veya güç kesintisinden kalmış işlem kilidi reddedilir. Başarısız/yabancı/kirli alan üzerine yazılmaz ve otomatik silinmez. Tamamlanmış temiz alan yeniden doğrulanır; aynı kökler tekrar getirilmez. Bu ilk sürümde otomatik kısmi indirme onarımı yoktur. Mevcut dosyaları inceleyin veya ayrı bir yeni hedef seçin; kilit silerek başarı uydurmayın.
+
+Tam hazırlığa devam akışı:
 
 1. Planı göster, host/disk/yol ve incelenmiş kaynak/yama kimliklerini doğrula.
-2. Açık indirme eylemiyle, ayrı dış alana sabit depot_tools ve Chromium commit'ini getir; beklenmedik HEAD/etiketi reddet.
+2. Uygulanan `--fetch-roots` ile ayrı dış alana sabit depot_tools ve Chromium commit'ini getir; beklenmedik HEAD/etiketi reddet.
 3. DEPS'i doğrula; bağımlılık ve araç/hook envanterini incele. İlk getirmede hook'ları çalıştırma; keyfi indirilen kodu güvenilir sayma.
 4. Platforma göre DEPS/CIPD/SDK/derleyici girdilerini çözümle ve tam kilit üret; yeniden çalıştırmada tutarsızlığı durdur. Bootstrap betiği `depot_tools`u sessiz güncelleyemez.
 5. Yetkili ve nitelendirilmiş hook aşamasıyla araçları hazırla; indirilen girdilerin kimliğini doğrula. Yuva hesap/özel depo gerektirme.
@@ -96,12 +109,14 @@ Hedef akış `./scripts/bootstrap` → `./scripts/build` → `./scripts/run`. **
 7. İncelenmiş GN argümanlarından build dizini oluştur. İlk önce değişmemiş Chromium güvenlik temeli, sonra Yuva katmanı derlenir.
 8. `build` bütün kayıtları doğrulayarak derler; `run` yalnız o çıktı ve ayrı geliştirici profiliyle açar. Sandbox/TLS kapatma bayrağı eklenmez. Çalışan ikilinin kaynak kimliği doğrulanabilir olur.
 
-Kısmi işlem durumu/journal ve güvenli tekrar deneme tasarlanacak; mevcut kullanıcı dizini üzerine kör silme yoktur. Ayrı araç veya build olmadan başarı dosyası oluşturulamaz. Mimari analizi sırasında büyük indirme başlatılmadı.
+Kök işlem durumu ve temiz alanda tekrar doğrulama uygulanmıştır. Bağımlılık/hook/yama aşamalarının journal/onarımı sonraki iştir. Mevcut kullanıcı dizini üzerine kör silme yoktur. Ayrı araç veya build olmadan tam hazırlık başarı dosyası oluşturulamaz. Bu oturumda büyük indirme başlatılmadı.
 
 ## CI ve commit disiplini
 
 [development-tools.yml](../.github/workflows/development-tools.yml) sırsız, tam SHA sabitli action'larla Python araç testlerini üç host ailesinde çalıştırır. Bu tarayıcı derlemesi, Pardus testi veya desktop-ready kapısı değildir. [upstream-watch.yml](../.github/workflows/upstream-watch.yml) iki saatte bir planlanan küçük meta veri denetimidir; yeni sürüm veya doğrulama hatası işi başarısız yapar, kaynak/yama silmez veya otomatik yayın yapmaz. GitHub schedule gecikebilir; işletim yedeği gerekir.
 
-18 Eylül 2026 doğrulaması: `2975528` kaynak commit'inde 36 test yerelde ve [üç CI hostunun her birinde](https://github.com/yigitbayol/yuva-browser/actions/runs/35278595752) geçti; atlanan test yok. [Uzak upstream denetimi](https://github.com/yigitbayol/yuva-browser/actions/runs/35278601704) de başarılı. İndekste 53 dosya/toplam 318.826 bayt denetlendi; Chromium kaynağı veya ikili çıktı eklenmedi. Bu kayıt daha sonraki commit veya upstream sürümlerinin doğrulandığı anlamına gelmez.
+İlk araç tesliminin 18 Eylül 2026 doğrulaması: `2975528` kaynak commit'inde 36 test yerelde ve [üç CI hostunun her birinde](https://github.com/yigitbayol/yuva-browser/actions/runs/35278595752) geçti; atlanan test yok. [Uzak upstream denetimi](https://github.com/yigitbayol/yuva-browser/actions/runs/35278601704) de başarılı. İndekste 53 dosya/toplam 318.826 bayt denetlendi; Chromium kaynağı veya ikili çıktı eklenmedi. Bu tarihsel kayıt daha sonraki commit veya upstream sürümlerinin doğrulandığı anlamına gelmez. Kök hazırlama için eklenen testler gerçek Git'i küçük yerel fixture depolarında kullanır; tam Chromium getirme başarısı iddia etmez.
+
+Kök hazırlama tesliminde yerel test sayısı 55'e çıktı; hepsi geçti. Yanlış commit/DEPS, değiştirilmiş kilit, disk/ağ hatası, kirli/yabancı dizin, aktif işlem kilidi, symlink ve ortam engelinde ağın hiç başlamaması sınandı. Platform CI sonuçları [workflow sayfasında](https://github.com/yigitbayol/yuva-browser/actions/workflows/development-tools.yml) izlenir. Yerel Mac hâlâ yaklaşık 77 GiB boş alan ve yalnız Command Line Tools nedeniyle gerçek getirme önkoşullarını karşılamıyor.
 
 Her commit öncesi `git add` sonrasında `./scripts/check-repository` ve `git diff --cached --check` çalıştırılır. `.gitignore` tek başına yeterli değildir; zorla eklenen dosyalar da kontrol edilir. Tarayıcı ikilileri yalnız nitelendirilmiş GitHub Releases artefaktıdır, Git geçmişine girmez. Tam yayın matrisi [Pardus planı](PARDUS_SUPPORT.md) ve [yayın güvenliğinde](../BUILD_RELEASE_SECURITY.md).

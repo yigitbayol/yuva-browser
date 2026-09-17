@@ -106,4 +106,6 @@ Kalkan Standart/Sıkı/Off ayrımı, Off altında zorunlu korumaların devamı, 
 
 İlk kaynak kimlikleri [versions.json](config/versions.json) içindedir; dört ürün/upstream/yama kimliği ve DEPS özeti bağlanır. Çözümlenmiş bütün alt bağımlılık/araç/platform girdileri olmadan tam kilit sayılmaz. Kaynak revizyonunu HTTPS ile kontrol etmek signed-release/TUF yetkilendirmesinin yerine geçmez.
 
+[upstream.lock.json](config/upstream.lock.json) şu anda yalnız kök kaynak kapsamını doğrular. Açık `bootstrap --fetch-roots` iki sabit commit'i dış dizine getirir, Git ayar/hook etkisini sınırlar ve yanlış HEAD/DEPS/VERSION veya kirli/yabancı alanda durur. Yarım işlem başarılı sayılmaz; eşzamanlı getirme engellenir. CI bunu küçük yerel Git depolarında sınar; gerçek Chromium, gclient veya hook çalıştırmaz. Alt bağımlılık/araç ve üretim build kapıları henüz açık değildir. [Sözleşme](docs/DEPENDENCY_LOCK.md).
+
 `.gitignore` ile birlikte `scripts/check-repository` Git indeksinin nesne boyutlarını ve kaynak/çıktı/cache kalıplarını denetler. Commit öncesi ve araç CI'sında çalışır; bilinen kalıplardaki veya boyut sınırını aşan dosyalar zorla eklenmiş olsa da yakalanır. Sırların her türünü, farklı adla gizlenmiş bütün çıktıları veya eski geçmişi taradığı iddia edilmez. Büyük dağıtım paketi yalnız doğrulanmış GitHub Releases artefaktıdır; Git geçmişinde saklanamaz.

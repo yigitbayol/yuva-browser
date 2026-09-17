@@ -12,7 +12,7 @@ Tam çatal seçeneği daha kolay ilk düzenleme sunabilir, ancak çok büyük Gi
 
 ## İlk uygulanan sınır
 
-`config/versions.json` dört açık kimliği (`chromium_version`, `chromium_revision`, `yuva_version`, `patchset_version`), DEPS özetini ve depot_tools revizyonunu tutar. `scope: source_baseline` ve `qualification: unbuilt` tam bağımlılık kilidi veya derleme başarısı iddiasını engeller. Henüz `config/upstream.lock.json` üretilmedi; çözümlenmiş DEPS/CIPD/SDK/derleyici/PGO/platform girdileri sonraki iştir.
+`config/versions.json` dört açık kimliği (`chromium_version`, `chromium_revision`, `yuva_version`, `patchset_version`), DEPS özetini ve depot_tools revizyonunu tutar. `scope: source_baseline` ve `qualification: unbuilt` tam bağımlılık kilidi veya derleme başarısı iddiasını engeller. İlk teslimde tam kilit yoktu; [ADR 0003](0003-staged-source-bootstrap.md) sonrasında `config/upstream.lock.json` yalnız kök kaynakları bağlar. Çözümlenmiş DEPS/CIPD/GCS/SDK/derleyici/PGO/platform girdileri sonraki iştir.
 
 `patches/series.json` şu anda boştur. Uygulanmış Yuva güvenlik özelliği sayılmaz. Her yama amaç, güvenlik/mahremiyet etkisi, çakışma riski, ilgili özellik/bileşen, test, bağımlılık ve hash taşır. Başarısız yama atılamaz.
 

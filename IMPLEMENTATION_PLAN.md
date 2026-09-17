@@ -10,13 +10,13 @@ Durum: Faz 1 geliştirme hazırlığı, 18 Eylül 2026. **İnce depo kararı kab
 | --- | --- |
 | 01 | İnce depo ve önkoşul ADR'leri kabul edildi. Ürün bileşenlerinin ayrı güvenlik/deney kararları bekliyor. |
 | 02 | Yerel macOS ARM64 envanteri ve `doctor` hazır. Disk bütçesi ve tam Xcode engelleri var; diğer platformlarda derleme kapasitesi henüz nitelendirilmedi. |
-| 03 | `config/versions.json` içinde Chromium sürüm/commit, DEPS SHA-256 ve depot_tools commit'i sabitlendi; uzak kaynak kimliği denetlendi. Tam DEPS/CIPD/SDK kilidi bekliyor. |
-| 04 | `bootstrap --plan` ve önkoşul kapısı hazır. Kaynak indirme, hook incelemesi, bağımlılık hazırlama ve GN yapılandırması uygulanmadı. |
+| 03 | `versions.json` başlangıcını ve yama manifestosunu bağlayan `upstream.lock.json` ile `check-lock` eklendi. Kapsam yalnız `source_roots`; tam DEPS/CIPD/GCS/SDK kilidi çözülmedi. |
+| 04 | `bootstrap --fetch-roots` sabit iki Git kökünü dış alana getirebilir; gerçek Git ile yerel fixture testleri var. Yanlış kimlik, kirli/yabancı dizin, eşzamanlı işlem ve kesinti kapalı sonuçlanır. Gerçek Chromium indirmesi yapılmadı; hook/bağımlılık/patch/GN hazırlığı bekliyor. |
 | 05 | Sıralı, hash denetimli yama manifestosu ve geçici Git indeksinde uyumluluk denetimi test edildi. Ürün yaması yok; gerçek kaynak hazırlama ve sonuç ağaç özeti hattı bekliyor. |
 | 06 | Başlanmadı; Chromium indirilmedi veya derlenmedi. |
 | 36 | Yalnız geliştirici araçları için Windows/macOS/Linux CI ve upstream izleyicisi tanımlandı. Tarayıcı/Pardus testleri, yayın, imzalama ve provenans hattı bekliyor. |
 
-Araç testleri `tests/tooling/` içindedir. Sıradaki küçük işler sırasıyla: hedef derleme makinesinin kaynak/SDK nitelendirmesi; tam bağımlılık kilidi şeması ve doğrulayıcısı; açık indirme seçeneğiyle dış çalışma alanı hazırlama; ilk saf Chromium derlemesi. İndirme/büyük derleme bu hazırlık tesliminin parçası değildir. Her ilerleme README'ye yansıtılır.
+Araç testleri `tests/tooling/` içindedir. Sıradaki küçük işler sırasıyla: hedef derleme makinesinin kaynak/SDK nitelendirmesi; sabit gclient uyarlayıcısı ile gerçek bağımlılık grafiği/kanıt envanteri; hook ve araç zinciri kilidi; temiz kaynak/yama/GN hazırlığı; ilk saf Chromium derlemesi. [Kilit sözleşmesi](docs/DEPENDENCY_LOCK.md) kök getirme ile tam hazırlığı ayırır. Büyük gerçek indirme/derleme bu teslimde yapılmadı. Her ilerleme README'ye yansıtılır.
 
 ## 01 — Mimari kararları incele
 

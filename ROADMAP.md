@@ -8,7 +8,7 @@ Temel, depolama, güvenlik, kayıt, içerik, yayın ve tasarım belgeleri hazır
 
 ## Güncel aşama — Faz 1 geliştirme hazırlığı
 
-Sabit kaynak kimlikleri, boş yama manifestosu, salt okunur ortam kontrolü, indirmesiz bootstrap planı, upstream sürüm/yama denetimi ve Git indeks koruması mevcut. Araçlar için CI tanımlandı; Chromium kaynakları henüz getirilmedi veya derlenmedi. Sırada ortam nitelendirmesi, tam bağımlılık kilidi ve gerçek kaynak hazırlama var. Ayrıntılı gerçekleşme durumu [uygulama planındadır](IMPLEMENTATION_PLAN.md).
+Sabit kaynak kimlikleri, boş yama manifestosu, salt okunur ortam kontrolü, kök kilidi ve açık seçenekle kök getirme, upstream sürüm/yama denetimi ve Git indeks koruması mevcut. Araçlar CI'da sınanıyor; gerçek Chromium kaynakları henüz getirilmedi veya derlenmedi. Sırada ortam nitelendirmesi, tam bağımlılık/hook/araç kilidi ve GN hazırlığı var. Ayrıntılı gerçekleşme durumu [uygulama planındadır](IMPLEMENTATION_PLAN.md).
 
 ## 0.1 — Developer Preview
 

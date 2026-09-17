@@ -8,7 +8,7 @@ Değişiklikleri küçük tutun; çözülen somut sorunu ve güvenlik/bakım etk
 
 Her anlamlı geliştirmede README'nin ilerleme bölümünü ve ilgili görev durumunu güncelleyin. Tasarım, prototip, araç testi ve gerçek platformda doğrulanmış tarayıcı özelliğini ayrı belirtin; hedeflenen davranışı tamamlandı saymayın.
 
-Python 3.11+ ile `python3 -m unittest discover -s tests/tooling -v` ve `python3 scripts/check-upstream` çalıştırın. Commit öncesi dosyaları açıkça seçerek indekse alın; `python3 scripts/check-repository` ve `git diff --cached --check` ile staged içeriği denetleyin. Chromium, depot_tools, bağımlılık indirmeleri, önbellekler ve ikili çıktılar depoya alınamaz. [Derleme belgesi](docs/BUILD.md) araçların sınırlarını açıklar.
+Python 3.11+ ile `python3 -m unittest discover -s tests/tooling -v`, `python3 scripts/check-upstream` ve `python3 scripts/check-lock` çalıştırın. Kaynak/yama kaydı değişirse kök kilidini aynı incelemede güncelleyin; testler kırıldı diye özetleri körlemesine yenilemeyin. Commit öncesi dosyaları açıkça seçerek indekse alın; `python3 scripts/check-repository` ve `git diff --cached --check` ile staged içeriği denetleyin. Chromium, depot_tools, bağımlılık indirmeleri, önbellekler ve ikili çıktılar depoya alınamaz. [Derleme belgesi](docs/BUILD.md) araçların sınırlarını açıklar.
 
 Kod katkılarında bileşen/yama sahibi, upstream revizyonu, bağımlılıklar, lisans kökeni, testler ve tamamlanma ölçütü belirtilir. Yetki sınırı değişiklikleri iki kişi tarafından incelenir. Gerektiğinde tehdit modeli ve güvenlik özellik kaydı güncellenir. Chromium korumalarını kapatarak gerileme gizlenmez.
 

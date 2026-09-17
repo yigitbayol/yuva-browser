@@ -3,6 +3,7 @@
 Bu depo geliştirme hazırlık araçları içerir; henüz çalışan Yuva tarayıcısı içermez. İlgili kararlar incelenmeden büyük Chromium değişikliği yapılmaz. Ana README ürün manifestosunu ve güncel ilerlemeyi birlikte gösterir; teknik kapsam ve yayın kapıları aşağıdadır.
 
 - [Kabul edilen ince depo kararı](adr/0001-thin-chromium-layer.md), [önkoşul denetimi kararı](adr/0002-development-preflight.md), [çalışan geliştirici komutları](BUILD.md).
+- [Aşamalı kaynak hazırlama kararı](adr/0003-staged-source-bootstrap.md), [bağımlılık kilidi sözleşmesi ve kalan kapılar](DEPENDENCY_LOCK.md).
 
 - [Karar özeti](../DECISION_SUMMARY.md), [temel analizi](../FOUNDATION_ANALYSIS.md), [asıl mimari](../ARCHITECTURE.md).
 - [Tehdit modeli](../THREAT_MODEL.md), [güvenlik politikası](../SECURITY.md), [özellik fark kaydı](SECURITY_FEATURE_REGISTER.md).

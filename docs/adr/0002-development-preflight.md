@@ -2,6 +2,8 @@
 
 Tarih: 18 Eylül 2026. Durum: kabul edildi — ilk geliştirici araçları.
 
+Sonraki dar genişletme: [ADR 0003](0003-staged-source-bootstrap.md) yalnız sabit kaynak köklerini açık seçenekle getirmeyi ekler; aşağıdaki ilk teslim kapsamı tarihsel olarak korunmuştur.
+
 `./scripts/bootstrap --plan` kaynak sürümü/revizyonu, dış hedef dizin ve disk bütçesini gösterir. `./scripts/bootstrap` buna salt okunur ortam denetimini ekler; bu ilk sürüm henüz kaynak getirmez veya derleme yapılandırmaz. Eksik aşamayı başarılı bootstrap diye göstermez; sıfır olmayan kod döndürür.
 
 100–200 GB veya daha fazla gerçek çalışma alanı gerekebilir; yapılandırma, semboller ve önbellek miktarı değişir. İlk otomatik büyük indirmeyi başlatma için 200 GiB boş alan ihtiyatlı Yuva politikasıdır, upstream'in resmî evrensel minimumu değildir. Sonraki gerçek ölçümler bu politikayı gerekçeyle değiştirebilir. RAM 8 GiB altında engel, 32 GiB altında kapasite uyarısıdır; bu sayılar başarılı build garantisi değildir.

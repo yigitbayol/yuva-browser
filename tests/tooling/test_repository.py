@@ -30,9 +30,11 @@ class RepositoryTests(unittest.TestCase):
     def test_rejects_source_tree_and_build_output(self):
         self.stage("vendor/chromium/third_party/blink/example.cc")
         self.stage("out/Default/Yuva.app/executable")
+        self.stage(".yuva-bootstrap.json")
+        self.stage(".yuva-empty-hooks/example")
         report = inspect_index(self.root)
         self.assertFalse(report["passed"])
-        self.assertEqual(len(report["checks"]), 2)
+        self.assertEqual(len(report["checks"]), 4)
 
     def test_checks_staged_blob_even_if_worktree_was_shrunk(self):
         path = self.stage("fixture.txt", b"a" * (MAX_FILE_BYTES + 1))
